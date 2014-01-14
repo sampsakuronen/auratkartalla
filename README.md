@@ -8,12 +8,11 @@ The snowplow GPS data is presented by [Stara](http://www.hel.fi/stara). The API 
 index.php is in this repo only so that Heroku installation works (and I'm too lazy to remove it).
 
 ## How to
-Install Compass and CoffeeScript (see instructions from Google).
-    (install compass and coffeescript)
+    Install Compass and CoffeeScript (see instructions from Google)
     compass watch .
     coffee -cw javascrip/main.coffee
-    launch a server (for example: python -m SimpleHTTPServer 8000)
-    open in browser: http://localhost:8000/home.html
+    Launch a server (for example: python -m SimpleHTTPServer 8000)
+    Open in browser: http://localhost:8000/home.html
 
 ## Links
 - https://github.com/codeforeurope/aura/wiki/API
