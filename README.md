@@ -5,7 +5,8 @@ I'm using [Sass](http://sass-lang.com/) with [Compass](http://compass-style.org/
 
 The snowplow GPS data is presented by [Stara](http://www.hel.fi/stara). The API used is a part of [Helsinki Open Data](http://dev.hel.fi/).
 
-index.php is in this repo only so that Heroku installation works (and I'm too lazy to remove it).
+Index.php is in this repo only so that Heroku installation works (by starting Apache stack).
+
 
 ## How to
     Install Compass and CoffeeScript (see instructions from Google)
@@ -14,10 +15,12 @@ index.php is in this repo only so that Heroku installation works (and I'm too la
     Launch a server (for example: python -m SimpleHTTPServer 8000)
     Open in browser: http://localhost:8000/home.html
 
+
+## Licence
+Licence is GPL v3. Please remember attribution and drop me a line: [@sampsakuronen](https://twitter.com/sampsakuronen)
+
+
 ## Links
 - https://github.com/codeforeurope/aura/wiki/API
 - http://dev.hel.fi/
 - http://www.hel.fi/stara
-
-## Licence
-Licence is GPL v3.
