@@ -1,10 +1,10 @@
-BASE_URL = 'http://dev.stadilumi.fi/api/v1/snowplow/'
+snowAPI = 'http://dev.stadilumi.fi/api/v1/snowplow/'
 map = undefined
 
 initializeGoogleMaps = ()->
   mapOptions =
     center: new google.maps.LatLng(60.193084, 24.940338)
-    zoom: 12
+    zoom: 13
     disableDefaultUI: true
   styles = [
     "elementType": "labels"
@@ -27,7 +27,7 @@ dropMapMarker = (lat, lng) ->
     fillOpacity: 0.8
     strokeColor: "#DF740C"
     strokeOpacity: 0.8
-    strokeWeight: 4
+    strokeWeight: 6
     scale: 0.01
 
   marker = new google.maps.Marker(
@@ -37,6 +37,7 @@ dropMapMarker = (lat, lng) ->
   )
 
 addMapLine = (coords) ->
+  console.log coords
   polyline = new google.maps.Polyline(
     path: []
     geodesic: true
@@ -46,7 +47,7 @@ addMapLine = (coords) ->
   )
 
   i = 0
-  while i < legs.length
+  while i < coords.length
     steps = legs[i].steps
     j = 0
     while j < steps.length
@@ -61,23 +62,22 @@ addMapLine = (coords) ->
   polyline.setMap map
 
 $(document).ready ->
-  getPlowPositionList = (callback)->
-    plowPositions = Bacon.fromPromise($.getJSON(BASE_URL + '?callback=?'))
-    plowPositions.onValue((json)-> callback(json))
-  getPlowHistoryList = (id, callback)->
-    plowPositions = Bacon.fromPromise($.getJSON(BASE_URL + '?history=500&callback=?'))
+  getActivePlows = (callback)->
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'))
     plowPositions.onValue((json)-> callback(json))
 
-  createPlowTrail = ->
+  createPlowTrail = (plowId)->
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=50&callback=?'))
+    plowPositions.onValue((json)-> addMapLine(json))
 
-  createPlowPaths = (json)->
+  createPlowsOnMap = (json)->
     _.each(json, (x)->
       dropMapMarker(x.last_loc.coords[1], x.last_loc.coords[0])
-      getPlowHistoryList(x.id, (json)-> createPlowTrail(x.id))
+      createPlowTrail(x.id)
     )
 
 
-  getPlowPositionList((json)-> createPlowPaths(json))
+  getActivePlows((json)-> createPlowsOnMap(json))
   initializeGoogleMaps()
 
 
@@ -85,15 +85,18 @@ $(document).ready ->
 
 
 
-console.log '  _________                            .__                       \n
- /   _____/ ____   ______  _  ________ |  |   ______  _  ________\n
- \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/\n
- /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\ \n
-/_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >\n
-        \\/     \\/ .__           |__|     .__  .__             \\/   .___   \n
-            ___  _|__| ________ _______  |  | |__|_______ ____   __| _/\n
-   Sampsa   \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ | \n
-    Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ | \n
-      2014    \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ | \n
-                          \\/           \\/              \\/    \\/     \\/\n
-               https://github.com/sampsakuronen/snowplow-visualization'
+console.log("%c
+                                                                               \n
+      _________                            .__                                 \n
+     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
+     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n
+     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n
+    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n
+            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n
+                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n
+       Sampsa   \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n
+        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n
+          2014    \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
+                              \\/           \\/              \\/    \\/     \\/     \n
+                   https://github.com/sampsakuronen/snowplow-visualization     \n
+                                                                               ", 'background: #222; color: #00e5ff')
