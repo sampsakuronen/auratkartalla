@@ -31,13 +31,6 @@
             "saturation": 100
           }
         ]
-      }, {
-        "featureType": "road.arterial",
-        "stylers": [
-          {
-            "color": "#00bbff"
-          }
-        ]
       }
     ];
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -53,7 +46,8 @@
       path: "M10 10 H 90 V 90 H 10 L 10 10",
       fillColor: plowJobColor,
       strokeColor: plowJobColor,
-      strokeWeight: 8,
+      strokeWeight: 7,
+      strokeOpacity: 0.8,
       scale: 0.01
     };
     return marker = new google.maps.Marker({
@@ -73,7 +67,7 @@
       path: polylinePath,
       geodesic: true,
       strokeColor: plowTrailColor,
-      strokeWeight: 3,
+      strokeWeight: 2,
       strokeOpacity: 0.6
     });
     return polyline.setMap(map);

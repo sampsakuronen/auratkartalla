@@ -15,9 +15,9 @@ initializeGoogleMaps = (callback)->
       { "weight": 0.4 }
       { "saturation": 100 }
     ]
-  ,
-    "featureType": "road.arterial",
-    "stylers": [{ "color": "#00bbff" }]
+  # ,
+  #   "featureType": "road.arterial",
+  #   "stylers": [{ "color": "#00bbff" }]
   ]
   map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
   map.setOptions({styles: styles})
@@ -28,7 +28,8 @@ dropMapMarker = (map, plowJobColor, lat, lng) ->
     path: "M10 10 H 90 V 90 H 10 L 10 10"
     fillColor: plowJobColor
     strokeColor: plowJobColor
-    strokeWeight: 8
+    strokeWeight: 7
+    strokeOpacity: 0.8
     scale: 0.01
 
   marker = new google.maps.Marker(
@@ -46,7 +47,7 @@ addMapLine = (map, plowData, plowTrailColor) ->
     path: polylinePath
     geodesic: true
     strokeColor: plowTrailColor
-    strokeWeight: 3
+    strokeWeight: 2
     strokeOpacity: 0.6
   )
 
