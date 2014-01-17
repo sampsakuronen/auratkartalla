@@ -1,7 +1,6 @@
 snowAPI = 'http://dev.stadilumi.fi/api/v1/snowplow/'
-map = undefined
 
-initializeGoogleMaps = ()->
+initializeGoogleMaps = (callback)->
   mapOptions =
     center: new google.maps.LatLng(60.193084, 24.940338)
     zoom: 13
@@ -22,8 +21,9 @@ initializeGoogleMaps = ()->
   ]
   map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
   map.setOptions({styles: styles})
+  callback(map)
 
-dropMapMarker = (lat, lng) ->
+dropMapMarker = (map, lat, lng) ->
   snowPlowMarker =
     path: "M10 10 H 90 V 90 H 10 L 10 10"
     fillColor: "#ff4e00"
@@ -37,16 +37,15 @@ dropMapMarker = (lat, lng) ->
     icon: snowPlowMarker
   )
 
-addMapLine = (coords) ->
-  # console.log coords
-  polylinePath = _.reduce(coords.history, ((accu, x)->
+addMapLine = (map, plowData) ->
+  polylinePath = _.reduce(plowData.history, ((accu, x)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
 
   polyline = new google.maps.Polyline(
     path: polylinePath
     geodesic: true
-    strokeColor: "#ff4e00"
+    strokeColor: "#b83800"
     strokeWeight: 2
   )
 
@@ -54,25 +53,33 @@ addMapLine = (coords) ->
 
 
 $(document).ready ->
-  getActivePlows = (callback)->
+  getActivePlows = (map, callback)->
     plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'))
-    plowPositions.onValue((json)-> callback(json))
+    plowPositions.onValue((json)-> callback(map, json))
     plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
-  createPlowTrail = (plowId)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=50&callback=?'))
-    plowPositions.onValue((json)-> addMapLine(json))
+  createPlowTrail = (map, plowId)->
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=2000&callback=?'))
+    plowPositions.onValue((json)-> addMapLine(map, json))
     plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
-  createPlowsOnMap = (json)->
+  createPlowsOnMap = (map, json)->
     _.each(json, (x)->
-      dropMapMarker(x.last_loc.coords[1], x.last_loc.coords[0])
-      createPlowTrail(x.id)
+      createPlowTrail(map, x.id)
+      dropMapMarker(map, x.last_loc.coords[1], x.last_loc.coords[0])
     )
 
+  initializeGoogleMaps((map)-> getActivePlows(map, (map, json)-> createPlowsOnMap(map, json)))
 
-  getActivePlows((json)-> createPlowsOnMap(json))
-  initializeGoogleMaps()
+
+
+
+
+
+
+
+
+
 
 
 
