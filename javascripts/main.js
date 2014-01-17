@@ -77,7 +77,7 @@
     var createPlowTrail, createPlowsOnMap, getActivePlows;
     getActivePlows = function(map, callback) {
       var plowPositions;
-      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=12hours+ago&callback=?'));
+      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=8hours+ago&callback=?'));
       plowPositions.onValue(function(json) {
         return callback(map, json);
       });
@@ -87,7 +87,7 @@
     };
     createPlowTrail = function(map, plowId, plowTrailColor) {
       var plowPositions;
-      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=1000&callback=?'));
+      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?since=8hours+ago&callback=?'));
       plowPositions.onValue(function(json) {
         return addMapLine(map, json, plowTrailColor);
       });
@@ -100,13 +100,13 @@
       getPlowJobColor = function(job) {
         switch (job) {
           case "kv":
-            return "#b6e78f";
+            return "#84ff00";
           case "au":
-            return "#b83800";
+            return "#ff6600";
           case "su":
             return "#ff0113";
           case "hi":
-            return "#8530a0";
+            return "#cc00ff";
           default:
             return "#ffffff";
         }

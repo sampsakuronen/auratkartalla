@@ -56,22 +56,22 @@ addMapLine = (map, plowData, plowTrailColor) ->
 
 $(document).ready ->
   getActivePlows = (map, callback)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=12hours+ago&callback=?'))
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=8hours+ago&callback=?'))
     plowPositions.onValue((json)-> callback(map, json))
     plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
   createPlowTrail = (map, plowId, plowTrailColor)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=1000&callback=?'))
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?since=8hours+ago&callback=?'))
     plowPositions.onValue((json)-> addMapLine(map, json, plowTrailColor))
     plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
   createPlowsOnMap = (map, json)->
     getPlowJobColor = (job)->
       switch job
-        when "kv" then "#b6e78f"
-        when "au" then "#b83800"
+        when "kv" then "#84ff00"
+        when "au" then "#ff6600"
         when "su" then "#ff0113"
-        when "hi" then "#8530a0"
+        when "hi" then "#cc00ff"
         else "#ffffff"
 
     _.each(json, (x)->
