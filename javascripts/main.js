@@ -154,12 +154,16 @@
 
   $(document).ready(function() {
     initializeGoogleMaps(populateMap, 8);
-    return $("#time-filters li").click(function(e) {
+    $("#time-filters li").click(function(e) {
       e.preventDefault();
       clearMap();
       populateMap($(this).data('time'));
       $("#time-filters li").removeClass("active");
       return $(this).addClass("active");
+    });
+    return $("#info").click(function(e) {
+      e.preventDefault();
+      return $(this).toggleClass("active");
     });
   });
 

@@ -102,6 +102,11 @@ $(document).ready ->
     $(this).addClass("active")
   )
 
+  $("#info").click((e)->
+    e.preventDefault()
+    $(this).toggleClass("active")
+  )
+
 
 
 

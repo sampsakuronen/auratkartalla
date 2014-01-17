@@ -25,18 +25,18 @@ a:active { color: #005675; }
 
 #info .info-button, #info .expanded { position: fixed; top: 1%; left: 0; min-height: 40px; background: black; color: white; font-size: 16px; line-height: 40px; -webkit-border-radius: 0 10px 10px 0; -moz-border-radius: 0 10px 10px 0; -ms-border-radius: 0 10px 10px 0; -o-border-radius: 0 10px 10px 0; border-radius: 0 10px 10px 0; -webkit-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -moz-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); }
 #info .info-button { cursor: pointer; width: 70px; z-index: 310; font-size: 18px; text-align: center; }
-#info .expanded { z-index: 300; width: 100%; max-width: 320px; padding: 0 30px 0 80px; line-height: 20px; -webkit-transform: translate(-500px, 0); -moz-transform: translate(-500px, 0); -ms-transform: translate(-500px, 0); -o-transform: translate(-500px, 0); transform: translate(-500px, 0); -webkit-transition: all 1s ease-in-out; -moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out; transition: all 1s ease-in-out; }
+#info .expanded { z-index: 300; width: 100%; max-width: 300px; padding: 0 30px 0 80px; line-height: 20px; -webkit-transform: translate(-500px, 0); -moz-transform: translate(-500px, 0); -ms-transform: translate(-500px, 0); -o-transform: translate(-500px, 0); transform: translate(-500px, 0); -webkit-transition: all 1s ease-in-out; -moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out; transition: all 1s ease-in-out; }
 #info .expanded .info-container { display: inline-block; padding: 40px 0; }
 #info .expanded p, #info .expanded ul { padding-bottom: 1em; }
 #info .expanded p:last-child, #info .expanded ul:last-child { padding-bottom: 0; }
 #info .expanded ul { list-style: none; }
-#info .expanded ul li:before { content: "■"; padding-right: 1em; }
+#info .expanded ul li:before { content: "■"; padding-right: 0.5em; }
 #info .expanded ul .kv:before { color: #84ff00; }
 #info .expanded ul .au:before { color: #ff6600; }
 #info .expanded ul .su:before { color: #ff0113; }
 #info .expanded ul .hi:before { color: #cc00ff; }
 #info .expanded ul .other:before { color: white; }
-#info:hover .expanded { -webkit-transform: translate(0, 0); -moz-transform: translate(0, 0); -ms-transform: translate(0, 0); -o-transform: translate(0, 0); transform: translate(0, 0); }
+#info.active .expanded { -webkit-transform: translate(0, 0); -moz-transform: translate(0, 0); -ms-transform: translate(0, 0); -o-transform: translate(0, 0); transform: translate(0, 0); }
 
 #time-filters { position: fixed; z-index: 200; top: 1%; right: 0; }
 #time-filters li { min-height: 40px; background: black; color: white; font-size: 16px; line-height: 40px; cursor: pointer; text-align: center; background: black; width: 120px; color: white; margin-bottom: 0.5em; -webkit-border-radius: 10px 0 0 10px; -moz-border-radius: 10px 0 0 10px; -ms-border-radius: 10px 0 0 10px; -o-border-radius: 10px 0 0 10px; border-radius: 10px 0 0 10px; -webkit-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -moz-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -webkit-transition: all 0.75s ease-in-out; -moz-transition: all 0.75s ease-in-out; -o-transition: all 0.75s ease-in-out; transition: all 0.75s ease-in-out; }
