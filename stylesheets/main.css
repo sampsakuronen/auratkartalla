@@ -41,3 +41,5 @@ a:active { color: #005675; }
 #time-filters { position: fixed; z-index: 9000; top: 1%; right: 0; }
 #time-filters li { min-height: 40px; background: black; color: white; font-size: 16px; line-height: 40px; cursor: pointer; text-align: center; background: black; width: 120px; color: white; margin-bottom: 0.5em; -webkit-border-radius: 10px 0 0 10px; -moz-border-radius: 10px 0 0 10px; -ms-border-radius: 10px 0 0 10px; -o-border-radius: 10px 0 0 10px; border-radius: 10px 0 0 10px; -webkit-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -moz-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -webkit-transition: all 0.75s ease-in-out; -moz-transition: all 0.75s ease-in-out; -o-transition: all 0.75s ease-in-out; transition: all 0.75s ease-in-out; }
 #time-filters li.active, #time-filters li:hover { background-color: white; color: black; }
+
+#facebook-like { position: fixed; bottom: 20px; right: 10px; }
