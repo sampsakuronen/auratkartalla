@@ -26,9 +26,18 @@
           {
             "invert_lightness": true
           }, {
-            "hue": "#00e5ff"
+            "hue": "#00bbff"
           }, {
             "weight": 0.4
+          }, {
+            "saturation": 100
+          }
+        ]
+      }, {
+        "featureType": "road.arterial",
+        "stylers": [
+          {
+            "color": "#00bbff"
           }
         ]
       }
@@ -47,7 +56,7 @@
       fillOpacity: 0.8,
       strokeColor: "#DF740C",
       strokeOpacity: 0.8,
-      strokeWeight: 6,
+      strokeWeight: 5,
       scale: 0.01
     };
     return marker = new google.maps.Marker({
