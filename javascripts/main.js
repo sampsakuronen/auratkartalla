@@ -47,12 +47,12 @@
     return callback(map);
   };
 
-  dropMapMarker = function(map, lat, lng) {
+  dropMapMarker = function(map, plowJobColor, lat, lng) {
     var marker, snowPlowMarker;
     snowPlowMarker = {
       path: "M10 10 H 90 V 90 H 10 L 10 10",
-      fillColor: "#ff4e00",
-      strokeColor: "#ff4e00",
+      fillColor: plowJobColor,
+      strokeColor: plowJobColor,
       strokeWeight: 8,
       scale: 0.01
     };
@@ -63,7 +63,7 @@
     });
   };
 
-  addMapLine = function(map, plowData) {
+  addMapLine = function(map, plowData, plowTrailColor) {
     var polyline, polylinePath;
     polylinePath = _.reduce(plowData.history, (function(accu, x) {
       accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]));
@@ -72,8 +72,9 @@
     polyline = new google.maps.Polyline({
       path: polylinePath,
       geodesic: true,
-      strokeColor: "#b83800",
-      strokeWeight: 2
+      strokeColor: plowTrailColor,
+      strokeWeight: 3,
+      strokeOpacity: 0.6
     });
     return polyline.setMap(map);
   };
@@ -82,7 +83,7 @@
     var createPlowTrail, createPlowsOnMap, getActivePlows;
     getActivePlows = function(map, callback) {
       var plowPositions;
-      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'));
+      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=12hours+ago&callback=?'));
       plowPositions.onValue(function(json) {
         return callback(map, json);
       });
@@ -90,20 +91,37 @@
         return console.error("Failed to fetch active snowplows: " + (JSON.stringify(error)));
       });
     };
-    createPlowTrail = function(map, plowId) {
+    createPlowTrail = function(map, plowId, plowTrailColor) {
       var plowPositions;
-      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=2000&callback=?'));
+      plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=1000&callback=?'));
       plowPositions.onValue(function(json) {
-        return addMapLine(map, json);
+        return addMapLine(map, json, plowTrailColor);
       });
       return plowPositions.onError(function(error) {
         return console.error("Failed to create snowplow trail for plow " + plowId + ": " + error);
       });
     };
     createPlowsOnMap = function(map, json) {
+      var getPlowJobColor;
+      getPlowJobColor = function(job) {
+        switch (job) {
+          case "kv":
+            return "#b6e78f";
+          case "au":
+            return "#b83800";
+          case "su":
+            return "#ff0113";
+          case "hi":
+            return "#8530a0";
+          default:
+            return "#ffffff";
+        }
+      };
       return _.each(json, function(x) {
-        createPlowTrail(map, x.id);
-        return dropMapMarker(map, x.last_loc.coords[1], x.last_loc.coords[0]);
+        var plowJobColor;
+        plowJobColor = getPlowJobColor(x.last_loc.events[0]);
+        createPlowTrail(map, x.id, plowJobColor);
+        return dropMapMarker(map, plowJobColor, x.last_loc.coords[1], x.last_loc.coords[0]);
       });
     };
     return initializeGoogleMaps(function(map) {
@@ -112,5 +130,7 @@
       });
     });
   });
+
+  console.log("%c                                                                               \n      _________                            .__                                 \n     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n                              \\/           \\/              \\/    \\/     \\/     \n                  https://github.com/sampsakuronen/snowplow-visualization      \n                                                                               ", 'background: #001e29; color: #00bbff');
 
 }).call(this);

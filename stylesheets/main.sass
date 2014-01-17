@@ -22,7 +22,7 @@ a
   left: 0
   z-index: 100
 
-#copyright
+#info
   .infobutton, .expanded
     position: fixed
     top: 1%
@@ -51,6 +51,25 @@ a
     small
       display: inline-block
       padding: 40px 0
+    p, ul
+      padding-bottom: 1em
+      &:last-child
+        padding-bottom: 0
+    ul
+      list-style: none
+      li:before
+        content: "■"
+        padding-right: 1em
+      .kv:before
+        color: #b6e78f
+      .au:before
+        color: #b83800
+      .su:before
+        color: #ff0113
+      .hi:before
+        color: #8530a0
+      .other:before
+        color: #ffffff
   &:hover
     .expanded
       +translate(0, 0)

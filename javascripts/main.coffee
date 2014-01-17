@@ -23,11 +23,11 @@ initializeGoogleMaps = (callback)->
   map.setOptions({styles: styles})
   callback(map)
 
-dropMapMarker = (map, lat, lng) ->
+dropMapMarker = (map, plowJobColor, lat, lng) ->
   snowPlowMarker =
     path: "M10 10 H 90 V 90 H 10 L 10 10"
-    fillColor: "#ff4e00"
-    strokeColor: "#ff4e00"
+    fillColor: plowJobColor
+    strokeColor: plowJobColor
     strokeWeight: 8
     scale: 0.01
 
@@ -37,7 +37,7 @@ dropMapMarker = (map, lat, lng) ->
     icon: snowPlowMarker
   )
 
-addMapLine = (map, plowData) ->
+addMapLine = (map, plowData, plowTrailColor) ->
   polylinePath = _.reduce(plowData.history, ((accu, x)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
@@ -45,8 +45,9 @@ addMapLine = (map, plowData) ->
   polyline = new google.maps.Polyline(
     path: polylinePath
     geodesic: true
-    strokeColor: "#b83800"
-    strokeWeight: 2
+    strokeColor: plowTrailColor
+    strokeWeight: 3
+    strokeOpacity: 0.6
   )
 
   polyline.setMap map
@@ -54,19 +55,28 @@ addMapLine = (map, plowData) ->
 
 $(document).ready ->
   getActivePlows = (map, callback)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'))
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=12hours+ago&callback=?'))
     plowPositions.onValue((json)-> callback(map, json))
     plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
-  createPlowTrail = (map, plowId)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=2000&callback=?'))
-    plowPositions.onValue((json)-> addMapLine(map, json))
+  createPlowTrail = (map, plowId, plowTrailColor)->
+    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=1000&callback=?'))
+    plowPositions.onValue((json)-> addMapLine(map, json, plowTrailColor))
     plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
   createPlowsOnMap = (map, json)->
+    getPlowJobColor = (job)->
+      switch job
+        when "kv" then "#b6e78f"
+        when "au" then "#b83800"
+        when "su" then "#ff0113"
+        when "hi" then "#8530a0"
+        else "#ffffff"
+
     _.each(json, (x)->
-      createPlowTrail(map, x.id)
-      dropMapMarker(map, x.last_loc.coords[1], x.last_loc.coords[0])
+      plowJobColor = getPlowJobColor(x.last_loc.events[0])
+      createPlowTrail(map, x.id, plowJobColor)
+      dropMapMarker(map, plowJobColor, x.last_loc.coords[1], x.last_loc.coords[0])
     )
 
   initializeGoogleMaps((map)-> getActivePlows(map, (map, json)-> createPlowsOnMap(map, json)))
@@ -86,18 +96,18 @@ $(document).ready ->
 
 
 
-# console.log("%c
-#                                                                                \n
-#       _________                            .__                                 \n
-#      /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
-#      \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n
-#      /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n
-#     /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n
-#             \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n
-#                 ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n
-#         Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n
-#         Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n
-#             2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
-#                               \\/           \\/              \\/    \\/     \\/     \n
-#                   https://github.com/sampsakuronen/snowplow-visualization      \n
-#                                                                                ", 'background: #001e29; color: #00bbff')
+console.log("%c
+                                                                               \n
+      _________                            .__                                 \n
+     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
+     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n
+     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n
+    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n
+            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n
+                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n
+        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n
+        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n
+            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
+                              \\/           \\/              \\/    \\/     \\/     \n
+                  https://github.com/sampsakuronen/snowplow-visualization      \n
+                                                                               ", 'background: #001e29; color: #00bbff')
