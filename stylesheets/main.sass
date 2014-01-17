@@ -77,11 +77,23 @@ a
 #time-filters
   position: fixed
   z-index: 9000
-  top: 0
+  top: 1%
   right: 0
   li
+    min-height: 40px
+    background: #000
+    color: #fff
+    font-size: 16px
+    line-height: 40px
     cursor: pointer
-    padding: 1em
-    background: red
-    color: white
-    margin-bottom: 1em
+    text-align: center
+    background: #000
+    width: 120px
+    color: #fff
+    margin-bottom: 0.5em
+    +border-radius(10px 0 0 10px)
+    +box-shadow(0 0 1em rgba(255,255,255, 0.1))
+    +transition(all 0.75s ease-in-out)
+    &.active, &:hover
+      background-color: #fff
+      color: #000

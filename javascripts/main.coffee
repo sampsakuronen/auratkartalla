@@ -70,9 +70,7 @@ getActivePlows = (time, callback)->
 
 createPlowTrail = (time, plowId, plowTrailColor)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&callback=?"))
-  plowPositions.onValue((json)->
-    console.log json
-    addMapLine(json, plowTrailColor))
+  plowPositions.onValue((json)-> addMapLine(json, plowTrailColor))
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
 createPlowsOnMap = (time, json)->
@@ -100,6 +98,8 @@ $(document).ready ->
     e.preventDefault()
     clearMap()
     populateMap($(this).data('time'))
+    $("#time-filters li").removeClass("active")
+    $(this).addClass("active")
   )
 
 

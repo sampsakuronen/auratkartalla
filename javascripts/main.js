@@ -115,7 +115,6 @@
     var plowPositions;
     plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&callback=?"));
     plowPositions.onValue(function(json) {
-      console.log(json);
       return addMapLine(json, plowTrailColor);
     });
     return plowPositions.onError(function(error) {
@@ -158,7 +157,9 @@
     return $("#time-filters li").click(function(e) {
       e.preventDefault();
       clearMap();
-      return populateMap($(this).data('time'));
+      populateMap($(this).data('time'));
+      $("#time-filters li").removeClass("active");
+      return $(this).addClass("active");
     });
   });
 
