@@ -51,12 +51,10 @@
   dropMapMarker = function(lat, lng) {
     var marker, snowPlowMarker;
     snowPlowMarker = {
-      path: 'M10 10 H 90 V 90 H 10 L 10 10',
-      fillColor: '#DF740C',
-      fillOpacity: 0.8,
-      strokeColor: "#DF740C",
-      strokeOpacity: 0.8,
-      strokeWeight: 5,
+      path: "M10 10 H 90 V 90 H 10 L 10 10",
+      fillColor: "#ff4e00",
+      strokeColor: "#ff4e00",
+      strokeWeight: 8,
       scale: 0.01
     };
     return marker = new google.maps.Marker({
@@ -67,30 +65,17 @@
   };
 
   addMapLine = function(coords) {
-    var i, j, k, nextSegment, polyline, steps;
-    console.log(coords);
+    var polyline, polylinePath;
+    polylinePath = _.reduce(coords.history, (function(accu, x) {
+      accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]));
+      return accu;
+    }), []);
     polyline = new google.maps.Polyline({
-      path: [],
+      path: polylinePath,
       geodesic: true,
-      strokeColor: "#f2e35e",
-      strokeOpacity: 1.0,
+      strokeColor: "#ff4e00",
       strokeWeight: 2
     });
-    i = 0;
-    while (i < coords.length) {
-      steps = legs[i].steps;
-      j = 0;
-      while (j < steps.length) {
-        nextSegment = google.maps.geometry.encoding.decodePath(steps[j].polyline.points);
-        k = 0;
-        while (k < nextSegment.length) {
-          polyline.getPath().push(nextSegment[k]);
-          k++;
-        }
-        j++;
-      }
-      i++;
-    }
     return polyline.setMap(map);
   };
 
@@ -99,15 +84,21 @@
     getActivePlows = function(callback) {
       var plowPositions;
       plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'));
-      return plowPositions.onValue(function(json) {
+      plowPositions.onValue(function(json) {
         return callback(json);
+      });
+      return plowPositions.onError(function(error) {
+        return console.error("Failed to fetch active snowplows: " + (JSON.stringify(error)));
       });
     };
     createPlowTrail = function(plowId) {
       var plowPositions;
       plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=50&callback=?'));
-      return plowPositions.onValue(function(json) {
+      plowPositions.onValue(function(json) {
         return addMapLine(json);
+      });
+      return plowPositions.onError(function(error) {
+        return console.error("Failed to create snowplow trail for plow " + plowId + ": " + error);
       });
     };
     createPlowsOnMap = function(json) {
@@ -121,7 +112,5 @@
     });
     return initializeGoogleMaps();
   });
-
-  console.log("%c                                                                               \n      _________                            .__                                 \n     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n       Sampsa   \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n          2014    \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n                              \\/           \\/              \\/    \\/     \\/     \n                   https://github.com/sampsakuronen/snowplow-visualization     \n                                                                               ", 'background: #222; color: #00e5ff');
 
 }).call(this);

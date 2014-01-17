@@ -20,18 +20,15 @@ initializeGoogleMaps = ()->
     "featureType": "road.arterial",
     "stylers": [{ "color": "#00bbff" }]
   ]
-  map = new google.maps.Map(document.getElementById("map-canvas"),
-      mapOptions)
+  map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
   map.setOptions({styles: styles})
 
 dropMapMarker = (lat, lng) ->
   snowPlowMarker =
-    path: 'M10 10 H 90 V 90 H 10 L 10 10'
-    fillColor: '#DF740C'
-    fillOpacity: 0.8
-    strokeColor: "#DF740C"
-    strokeOpacity: 0.8
-    strokeWeight: 5
+    path: "M10 10 H 90 V 90 H 10 L 10 10"
+    fillColor: "#ff4e00"
+    strokeColor: "#ff4e00"
+    strokeWeight: 8
     scale: 0.01
 
   marker = new google.maps.Marker(
@@ -41,38 +38,31 @@ dropMapMarker = (lat, lng) ->
   )
 
 addMapLine = (coords) ->
-  console.log coords
+  # console.log coords
+  polylinePath = _.reduce(coords.history, ((accu, x)->
+    accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
+    accu), [])
+
   polyline = new google.maps.Polyline(
-    path: []
+    path: polylinePath
     geodesic: true
-    strokeColor: "#f2e35e"
-    strokeOpacity: 1.0
+    strokeColor: "#ff4e00"
     strokeWeight: 2
   )
 
-  i = 0
-  while i < coords.length
-    steps = legs[i].steps
-    j = 0
-    while j < steps.length
-      nextSegment = google.maps.geometry.encoding.decodePath(steps[j].polyline.points)
-      k = 0
-      while k < nextSegment.length
-        polyline.getPath().push nextSegment[k]
-        k++
-      j++
-    i++
-
   polyline.setMap map
+
 
 $(document).ready ->
   getActivePlows = (callback)->
     plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=2hours+ago&callback=?'))
     plowPositions.onValue((json)-> callback(json))
+    plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
   createPlowTrail = (plowId)->
     plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?history=50&callback=?'))
     plowPositions.onValue((json)-> addMapLine(json))
+    plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
   createPlowsOnMap = (json)->
     _.each(json, (x)->
@@ -89,18 +79,18 @@ $(document).ready ->
 
 
 
-console.log("%c
-                                                                               \n
-      _________                            .__                                 \n
-     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
-     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n
-     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n
-    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n
-            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n
-                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n
-       Sampsa   \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n
-        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n
-          2014    \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
-                              \\/           \\/              \\/    \\/     \\/     \n
-                   https://github.com/sampsakuronen/snowplow-visualization     \n
-                                                                               ", 'background: #222; color: #00e5ff')
+# console.log("%c
+#                                                                                \n
+#       _________                            .__                                 \n
+#      /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
+#      \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n
+#      /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n
+#     /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n
+#             \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n
+#                 ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n
+#         Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n
+#         Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n
+#             2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
+#                               \\/           \\/              \\/    \\/     \\/     \n
+#                   https://github.com/sampsakuronen/snowplow-visualization      \n
+#                                                                                ", 'background: #001e29; color: #00bbff')

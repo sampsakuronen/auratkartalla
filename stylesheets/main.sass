@@ -7,6 +7,15 @@ html, body, #map-canvas
   font-family: "Exo 2", Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
 
+a
+  color: #00bbff
+  text-decoration: none
+  +transition(color 0.5s ease-in-out)
+  &:hover
+    color: #66d7ff
+  &:active
+    color: #005675
+
 #plow-ids
   position: absolute
   top: 0
@@ -39,9 +48,6 @@ html, body, #map-canvas
     line-height: 20px
     +translate(-500px, 0)
     +transition(all 1s ease-in-out)
-    a
-      color: #00e5ff
-      text-decoration: none
     small
       display: inline-block
       padding: 40px 0
