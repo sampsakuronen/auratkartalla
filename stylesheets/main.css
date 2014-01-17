@@ -37,3 +37,6 @@ a:active { color: #005675; }
 #info .expanded ul .hi:before { color: #cc00ff; }
 #info .expanded ul .other:before { color: white; }
 #info:hover .expanded { -webkit-transform: translate(0, 0); -moz-transform: translate(0, 0); -ms-transform: translate(0, 0); -o-transform: translate(0, 0); transform: translate(0, 0); }
+
+#time-filters { position: fixed; z-index: 9000; top: 0; right: 0; }
+#time-filters li { cursor: pointer; padding: 1em; background: red; color: white; margin-bottom: 1em; }

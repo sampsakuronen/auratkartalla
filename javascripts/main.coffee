@@ -1,6 +1,9 @@
 snowAPI = 'http://dev.stadilumi.fi/api/v1/snowplow/'
+activePolylines = []
+activeMarkers = []
+map = null
 
-initializeGoogleMaps = (callback)->
+initializeGoogleMaps = (callback, time)->
   mapOptions =
     center: new google.maps.LatLng(60.193084, 24.940338)
     zoom: 13
@@ -15,15 +18,15 @@ initializeGoogleMaps = (callback)->
       { "weight": 0.4 }
       { "saturation": 100 }
     ]
-  # ,
-  #   "featureType": "road.arterial",
-  #   "stylers": [{ "color": "#00bbff" }]
+  ,
+    "featureType": "road.arterial",
+    "stylers": [{ "color": "#00bbff" }, {"weight": 0.1}]
   ]
   map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
   map.setOptions({styles: styles})
-  callback(map)
+  callback(time)
 
-dropMapMarker = (map, plowJobColor, lat, lng) ->
+dropMapMarker = (plowJobColor, lat, lng) ->
   snowPlowMarker =
     path: "M10 10 H 90 V 90 H 10 L 10 10"
     fillColor: plowJobColor
@@ -37,8 +40,10 @@ dropMapMarker = (map, plowJobColor, lat, lng) ->
     map: map
     icon: snowPlowMarker
   )
+  activeMarkers.push(marker)
+  marker
 
-addMapLine = (map, plowData, plowTrailColor) ->
+addMapLine = (plowData, plowTrailColor) ->
   polylinePath = _.reduce(plowData.history, ((accu, x)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
@@ -51,45 +56,51 @@ addMapLine = (map, plowData, plowTrailColor) ->
     strokeOpacity: 0.6
   )
 
+  activePolylines.push(polyline)
   polyline.setMap map
+
+clearMap = ->
+  _.each(activePolylines, (polyline)-> polyline.setMap(null))
+  _.each(activeMarkers, (marker)-> marker.setMap(null))
+
+getActivePlows = (time, callback)->
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}&callback=?"))
+  plowPositions.onValue((json)-> callback(time, json))
+  plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
+
+createPlowTrail = (time, plowId, plowTrailColor)->
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&callback=?"))
+  plowPositions.onValue((json)->
+    console.log json
+    addMapLine(json, plowTrailColor))
+  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
+
+createPlowsOnMap = (time, json)->
+  getPlowJobColor = (job)->
+    switch job
+      when "kv" then "#84ff00"
+      when "au" then "#ff6600"
+      when "su" then "#ff0113"
+      when "hi" then "#cc00ff"
+      else "#ffffff"
+
+  _.each(json, (x)->
+    plowJobColor = getPlowJobColor(x.last_loc.events[0])
+    createPlowTrail(time, x.id, plowJobColor)
+    dropMapMarker(plowJobColor, x.last_loc.coords[1], x.last_loc.coords[0])
+  )
+
+populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createPlowsOnMap(time, json))
 
 
 $(document).ready ->
-  getActivePlows = (map, callback)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + '?since=8hours+ago&callback=?'))
-    plowPositions.onValue((json)-> callback(map, json))
-    plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
+  initializeGoogleMaps(populateMap, 8)
 
-  createPlowTrail = (map, plowId, plowTrailColor)->
-    plowPositions = Bacon.fromPromise($.getJSON(snowAPI + plowId + '?since=8hours+ago&callback=?'))
-    plowPositions.onValue((json)-> addMapLine(map, json, plowTrailColor))
-    plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
-
-  createPlowsOnMap = (map, json)->
-    getPlowJobColor = (job)->
-      switch job
-        when "kv" then "#84ff00"
-        when "au" then "#ff6600"
-        when "su" then "#ff0113"
-        when "hi" then "#cc00ff"
-        else "#ffffff"
-
-    _.each(json, (x)->
-      plowJobColor = getPlowJobColor(x.last_loc.events[0])
-      createPlowTrail(map, x.id, plowJobColor)
-      dropMapMarker(map, plowJobColor, x.last_loc.coords[1], x.last_loc.coords[0])
-    )
-
-  initializeGoogleMaps((map)-> getActivePlows(map, (map, json)-> createPlowsOnMap(map, json)))
-
-
-
-
-
-
-
-
-
+  $("#time-filters li").click((e)->
+    e.preventDefault()
+    clearMap()
+    populateMap($(this).data('time'))
+  )
 
 
 
