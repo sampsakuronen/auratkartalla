@@ -65,26 +65,40 @@ a
       padding-bottom: 1em
       &:last-child
         padding-bottom: 0
-    ul
-      list-style: none
-      li:before
-        content: "■"
-        padding-right: 0.5em
-      .kv:before
-        color: #84ff00
-      .au:before
-        color: #f2c12e
-      .su:before
-        color: #d93425
-      .hi:before
-        color: #ffffff
-      .other:before
-        color: #04bfbf
-  .copyright
-    margin-top: 1em
   &.off
     .expanded
       +translate(-500px, 0)
+
+#legend
+  position: fixed
+  z-index: 250
+  bottom: 0
+  right: 0
+  width: 100%
+  max-width: 200px
+  padding: 30px
+  background: #000
+  color: #fff
+  font-size: 16px
+  line-height: 20px
+  +border-radius(10px 0 0 0)
+  +box-shadow(0 0 1em rgba(255,255,255, 0.1))
+  ul
+    list-style: none
+    li:before
+      content: "■"
+      padding-right: 0.5em
+      +opacity(0.9)
+    .kv:before
+      color: #84ff00
+    .au:before
+      color: #f2c12e
+    .su:before
+      color: #d93425
+    .hi:before
+      color: #ffffff
+    .other:before
+      color: #04bfbf
 
 #time-filters
   position: fixed
@@ -139,3 +153,15 @@ a
   #time-filters
     li
       margin-bottom: 0.25em
+  #legend
+    left: 0
+    right: 0
+    line-height: 1em
+    font-size: 12px
+    padding: 10px
+    max-width: none
+    +border-radius(0)
+    li
+      display: inline-block
+      float: left
+      margin-right: 0.25em
