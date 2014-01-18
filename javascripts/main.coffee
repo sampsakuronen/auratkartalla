@@ -79,7 +79,7 @@ showNotification = (notificationText)->
 
 getActivePlows = (time, callback)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
-  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitsemanasi aikana"))
+  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitulla ajalla. Valitse jokin muu aika!"))
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, plowTrailColor)->
@@ -106,7 +106,7 @@ populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createP
 
 
 $(document).ready ->
-  initializeGoogleMaps(populateMap, 2)
+  initializeGoogleMaps(populateMap, 24)
 
   $("#time-filters li").click((e)->
     e.preventDefault()
@@ -143,3 +143,4 @@ console.log("%c
                               \\/           \\/              \\/    \\/     \\/     \n
                   https://github.com/sampsakuronen/snowplow-visualization      \n
                                                                                ", 'background: #001e29; color: #00bbff')
+console.log("It's nice to see that you want to see how something is made. We are looking for guys like you: http://reaktor.fi/careers/")

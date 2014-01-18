@@ -139,7 +139,7 @@
       if (json.length !== 0) {
         return callback(time, json);
       } else {
-        return showNotification("Yksikään ajoneuvo ei ole työskennellyt valitsemanasi aikana");
+        return showNotification("Yksikään ajoneuvo ei ole työskennellyt valitulla ajalla. Valitse jokin muu aika!");
       }
     });
     return plowPositions.onError(function(error) {
@@ -193,7 +193,7 @@
   };
 
   $(document).ready(function() {
-    initializeGoogleMaps(populateMap, 2);
+    initializeGoogleMaps(populateMap, 24);
     $("#time-filters li").click(function(e) {
       e.preventDefault();
       clearMap();
@@ -208,5 +208,7 @@
   });
 
   console.log("%c                                                                               \n      _________                            .__                                 \n     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n                              \\/           \\/              \\/    \\/     \\/     \n                  https://github.com/sampsakuronen/snowplow-visualization      \n                                                                               ", 'background: #001e29; color: #00bbff');
+
+  console.log("It's nice to see that you want to see how something is made. We are looking for guys like you: http://reaktor.fi/careers/");
 
 }).call(this);
