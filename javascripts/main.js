@@ -34,7 +34,7 @@
           }, {
             "weight": 0.4
           }, {
-            "saturation": 100
+            "saturation": 80
           }
         ]
       }, {
@@ -44,6 +44,27 @@
             "color": "#00bbff"
           }, {
             "weight": 0.1
+          }
+        ]
+      }, {
+        "featureType": "administrative.locality",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      }, {
+        "featureType": "administrative.neighborhood",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      }, {
+        "featureType": "administrative.land_parcel",
+        "stylers": [
+          {
+            "visibility": "on"
           }
         ]
       }
