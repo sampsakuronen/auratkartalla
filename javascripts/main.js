@@ -153,7 +153,7 @@
   };
 
   $(document).ready(function() {
-    initializeGoogleMaps(populateMap, 8);
+    initializeGoogleMaps(populateMap, 2);
     $("#time-filters li").click(function(e) {
       e.preventDefault();
       clearMap();

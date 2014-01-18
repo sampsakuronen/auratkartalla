@@ -17,6 +17,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 html, body, #map-canvas { height: 100%; width: 100%; font-family: "Exo 2", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 
+h1 { font-weight: bold; margin-bottom: 1em; }
+
 a { color: #00bbff; text-decoration: none; -webkit-transition: color 0.5s ease-in-out; -moz-transition: color 0.5s ease-in-out; -o-transition: color 0.5s ease-in-out; transition: color 0.5s ease-in-out; }
 a:hover { color: #66d7ff; }
 a:active { color: #005675; }

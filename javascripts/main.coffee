@@ -92,7 +92,7 @@ populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createP
 
 
 $(document).ready ->
-  initializeGoogleMaps(populateMap, 8)
+  initializeGoogleMaps(populateMap, 2)
 
   $("#time-filters li").click((e)->
     e.preventDefault()
