@@ -102,9 +102,9 @@ $(document).ready ->
     $(this).addClass("active")
   )
 
-  $("#info").click((e)->
+  $("#info-close, #info-button").click((e)->
     e.preventDefault()
-    $(this).toggleClass("active")
+    $("#info").toggleClass("off")
   )
 
 

@@ -161,9 +161,9 @@
       $("#time-filters li").removeClass("active");
       return $(this).addClass("active");
     });
-    return $("#info").click(function(e) {
+    return $("#info-close, #info-button").click(function(e) {
       e.preventDefault();
-      return $(this).toggleClass("active");
+      return $("#info").toggleClass("off");
     });
   });
 

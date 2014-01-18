@@ -20,14 +20,8 @@ a
   &:active
     color: #005675
 
-#plow-ids
-  position: absolute
-  top: 0
-  left: 0
-  z-index: 100
-
 #info
-  .info-button, .expanded
+  #info-button, .expanded
     position: fixed
     top: 1%
     left: 0
@@ -38,19 +32,31 @@ a
     line-height: 40px
     +border-radius(0 10px 10px 0)
     +box-shadow(0 0 1em rgba(255,255,255, 0.1))
-  .info-button
+  #info-button
     cursor: pointer
     width: 70px
-    z-index: 310
+    z-index: 290
     font-size: 18px
     text-align: center
+  #info-close
+    position: absolute
+    top: 0
+    right: 0
+    background: inherit
+    color: inherit
+    border: 0
+    outline: none
+    font-size: 14px
+    padding: 1em
+    font-family: inherit
+    cursor: pointer
   .expanded
     z-index: 300
     width: 100%
     max-width: 300px
-    padding: 0 30px 0 80px
+    padding: 0 30px 0 50px
     line-height: 20px
-    +translate(-500px, 0)
+    +translate(0, 0)
     +transition(all 1s ease-in-out)
     .info-container
       display: inline-block
@@ -74,9 +80,11 @@ a
         color: #cc00ff
       .other:before
         color: #ffffff
-  &.active
+  .copyright
+    margin-top: 1em
+  &.off
     .expanded
-      +translate(0, 0)
+      +translate(-500px, 0)
 
 #time-filters
   position: fixed
