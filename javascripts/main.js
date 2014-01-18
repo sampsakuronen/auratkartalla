@@ -85,7 +85,7 @@
       geodesic: true,
       strokeColor: plowTrailColor,
       strokeWeight: 2,
-      strokeOpacity: 0.6
+      strokeOpacity: 0.5
     });
     activePolylines.push(polyline);
     return polyline.setMap(map);
@@ -113,7 +113,7 @@
 
   createPlowTrail = function(time, plowId, plowTrailColor) {
     var plowPositions;
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&callback=?"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=30&callback=?"));
     plowPositions.onValue(function(json) {
       return addMapLine(json, plowTrailColor);
     });

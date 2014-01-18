@@ -53,7 +53,7 @@ addMapLine = (plowData, plowTrailColor) ->
     geodesic: true
     strokeColor: plowTrailColor
     strokeWeight: 2
-    strokeOpacity: 0.6
+    strokeOpacity: 0.5
   )
 
   activePolylines.push(polyline)
@@ -69,7 +69,7 @@ getActivePlows = (time, callback)->
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, plowTrailColor)->
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&callback=?"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=30&callback=?"))
   plowPositions.onValue((json)-> addMapLine(json, plowTrailColor))
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
