@@ -62,7 +62,7 @@ addMapLine = (plowData, plowTrailColor) ->
     geodesic: true
     strokeColor: plowTrailColor
     strokeWeight: 2
-    strokeOpacity: 0.5
+    strokeOpacity: 0.6
   )
 
   activePolylines.push(polyline)
