@@ -2,7 +2,7 @@
 (function() {
   var activeMarkers, activePolylines, addMapLine, clearMap, createPlowTrail, createPlowsOnMap, dropMapMarker, getActivePlows, initializeGoogleMaps, map, populateMap, snowAPI;
 
-  snowAPI = 'http://dev.stadilumi.fi/api/v1/snowplow/';
+  snowAPI = "http://dev.hel.fi/aura/v1/snowplow/";
 
   activePolylines = [];
 
