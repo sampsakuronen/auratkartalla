@@ -4,14 +4,18 @@ activeMarkers = []
 map = null
 
 initializeGoogleMaps = (callback, time)->
+  helsinkiCenter = new google.maps.LatLng(60.193084, 24.940338)
+
   mapOptions =
-    center: new google.maps.LatLng(60.193084, 24.940338)
+    center: helsinkiCenter
     zoom: 13
     disableDefaultUI: true
+    zoomControl: true
+    zoomControlOptions:
+      style: google.maps.ZoomControlStyle.LARGE,
+      position: google.maps.ControlPosition.LEFT_BOTTOM
+
   styles = [
-    "elementType": "labels"
-    "stylers": [ "visibility": "off" ]
-  ,
     "stylers": [
       { "invert_lightness": true }
       { "hue": "#00bbff" }
@@ -20,19 +24,27 @@ initializeGoogleMaps = (callback, time)->
     ]
   ,
     "featureType": "road.arterial"
-    "stylers": [{ "color": "#00bbff" }, {"weight": 0.1}]
+    "stylers": [
+      { "color": "#00bbff" }
+      { "weight": 0.1 }
+    ]
+  ,
+    "elementType": "labels"
+    "stylers": [ "visibility": "off" ]
   ,
     "featureType": "administrative.locality"
-    "stylers": [{ "visibility": "on" }]
+    "stylers": [ "visibility": "on" ]
   ,
     "featureType": "administrative.neighborhood"
-    "stylers": [{ "visibility": "on" }]
+    "stylers": [ "visibility": "on" ]
   ,
     "featureType": "administrative.land_parcel"
-    "stylers": [{ "visibility": "on" }]
+    "stylers": [ "visibility": "on" ]
   ]
+
   map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
   map.setOptions({styles: styles})
+
   callback(time)
 
 dropMapMarker = (plowJobColor, lat, lng) ->
@@ -49,11 +61,21 @@ dropMapMarker = (plowJobColor, lat, lng) ->
     map: map
     icon: snowPlowMarker
   )
+
   activeMarkers.push(marker)
   marker
 
-addMapLine = (plowData, plowTrailColor) ->
-  polylinePath = _.reduce(plowData.history, ((accu, x)->
+getPlowJobColor = (job)->
+  switch job
+    when "kv" then "#84ff00"
+    when "au" then "#f2c12e"
+    when "su" then "#d93425"
+    when "hi" then "#ffffff"
+    else "#04bfbf"
+
+addMapLine = (plowData, plowJobId)->
+  plowTrailColor = getPlowJobColor(plowJobId)
+  polylinePath = _.reduce(plowData, ((accu, x)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
 
@@ -69,8 +91,8 @@ addMapLine = (plowData, plowTrailColor) ->
   polyline.setMap map
 
 clearMap = ->
-  _.each(activePolylines, (polyline)-> polyline.setMap(null))
-  _.each(activeMarkers, (marker)-> marker.setMap(null))
+  _.map(activePolylines, (polyline)-> polyline.setMap(null))
+  _.map(activeMarkers, (marker)-> marker.setMap(null))
 
 showNotification = (notificationText)->
   $notification = $("#notification")
@@ -79,27 +101,30 @@ showNotification = (notificationText)->
 
 getActivePlows = (time, callback)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
-  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitulla ajalla. Valitse jokin muu aika!"))
+  plowPositions.onValue((json)->
+    if json.length isnt 0
+      callback(time, json)
+    else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitulla ajalla. Valitse jokin muu aika!")
+  )
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
-createPlowTrail = (time, plowId, plowTrailColor)->
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=5"))
-  plowPositions.onValue((json)-> if json.length isnt 0 then addMapLine(json, plowTrailColor) else showNotification("Aura #{plowId} ei ole työskennellyt tänä aikana."))
+createPlowTrail = (time, plowId, historyData)->
+  splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
+
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=3"))
+
+  plowPositions.onValue((json)->
+    if json.length isnt 0
+      _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
+    else
+      showNotification("Aura #{plowId} ei ole työskennellyt tänä aikana.")
+  )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
 createPlowsOnMap = (time, json)->
-  getPlowJobColor = (job)->
-    switch job
-      when "kv" then "#84ff00"
-      when "au" then "#f2c12e"
-      when "su" then "#d93425"
-      when "hi" then "#ffffff"
-      else "#04bfbf"
-
   _.each(json, (x)->
-    plowJobColor = getPlowJobColor(x.last_loc.events[0])
-    createPlowTrail(time, x.id, plowJobColor)
-    dropMapMarker(plowJobColor, x.last_loc.coords[1], x.last_loc.coords[0])
+    createPlowTrail(time, x.id, json)
+    dropMapMarker(getPlowJobColor(x.last_loc.events[0]), x.last_loc.coords[1], x.last_loc.coords[0])
   )
 
 populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createPlowsOnMap(time, json))
@@ -108,18 +133,23 @@ populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createP
 $(document).ready ->
   initializeGoogleMaps(populateMap, 24)
 
-  $("#time-filters li").click((e)->
+  $("#time-filters li").asEventStream("click").onValue((e)->
     e.preventDefault()
     clearMap()
-    populateMap($(this).data('time'))
+    populateMap($(e.currentTarget).data('time'))
     $("#time-filters li").removeClass("active")
-    $(this).addClass("active")
+    $(e.currentTarget).addClass("active")
   )
 
-  $("#info-close, #info-button").click((e)->
+  $("#info-close, #info-button").asEventStream("click").onValue((e)->
     e.preventDefault()
     $("#info").toggleClass("off")
   )
+
+
+
+
+
 
 
 
@@ -143,4 +173,4 @@ console.log("%c
                               \\/           \\/              \\/    \\/     \\/     \n
                   https://github.com/sampsakuronen/snowplow-visualization      \n
                                                                                ", 'background: #001e29; color: #00bbff')
-console.log("It's nice to see that you want to see how something is made. We are looking for guys like you: http://reaktor.fi/careers/")
+console.log("It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/")
