@@ -72,14 +72,19 @@ clearMap = ->
   _.each(activePolylines, (polyline)-> polyline.setMap(null))
   _.each(activeMarkers, (marker)-> marker.setMap(null))
 
+showNotification = (notificationText)->
+  $notification = $("#notification")
+  $notification.empty().text(notificationText).addClass("active").delay(4000).queue(-> $(this).removeClass("active"))
+  $notification.asEventStream('click').onValue(-> $notification.removeClass("active"))
+
 getActivePlows = (time, callback)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
-  plowPositions.onValue((json)-> callback(time, json))
+  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitsemanasi aikana"))
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, plowTrailColor)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=5"))
-  plowPositions.onValue((json)-> addMapLine(json, plowTrailColor))
+  plowPositions.onValue((json)-> if json.length isnt 0 then addMapLine(json, plowTrailColor) else showNotification("Aura #{plowId} ei ole työskennellyt tänä aikana."))
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
 createPlowsOnMap = (time, json)->

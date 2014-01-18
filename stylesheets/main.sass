@@ -110,6 +110,22 @@ a
       background-color: #fff
       color: #000
 
+#notification
+  position: absolute
+  z-index: 1000
+  top: 10%
+  left: 50%
+  margin-left: -150px
+  width: 300px
+  padding: 20px
+  background: #fff
+  color: #000
+  +border-radius(5px)
+  +opacity(0)
+  +transition(opacity 0.75s ease-in-out)
+  &.active
+    +opacity(1)
+
 #facebook-like
   position: fixed
   bottom: 20px
