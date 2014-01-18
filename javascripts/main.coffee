@@ -77,10 +77,10 @@ createPlowsOnMap = (time, json)->
   getPlowJobColor = (job)->
     switch job
       when "kv" then "#84ff00"
-      when "au" then "#ff6600"
-      when "su" then "#ff0113"
-      when "hi" then "#cc00ff"
-      else "#ffffff"
+      when "au" then "#f2c12e"
+      when "su" then "#d93425"
+      when "hi" then "#ffffff"
+      else "#04bfbf"
 
   _.each(json, (x)->
     plowJobColor = getPlowJobColor(x.last_loc.events[0])

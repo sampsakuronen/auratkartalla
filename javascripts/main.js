@@ -129,13 +129,13 @@
         case "kv":
           return "#84ff00";
         case "au":
-          return "#ff6600";
+          return "#f2c12e";
         case "su":
-          return "#ff0113";
+          return "#d93425";
         case "hi":
-          return "#cc00ff";
-        default:
           return "#ffffff";
+        default:
+          return "#04bfbf";
       }
     };
     return _.each(json, function(x) {

@@ -33,10 +33,10 @@ a:active { color: #005675; }
 #info .expanded ul { list-style: none; }
 #info .expanded ul li:before { content: "■"; padding-right: 0.5em; }
 #info .expanded ul .kv:before { color: #84ff00; }
-#info .expanded ul .au:before { color: #ff6600; }
-#info .expanded ul .su:before { color: #ff0113; }
-#info .expanded ul .hi:before { color: #cc00ff; }
-#info .expanded ul .other:before { color: white; }
+#info .expanded ul .au:before { color: #f2c12e; }
+#info .expanded ul .su:before { color: #d93425; }
+#info .expanded ul .hi:before { color: white; }
+#info .expanded ul .other:before { color: #04bfbf; }
 #info .copyright { margin-top: 1em; }
 #info.off .expanded { -webkit-transform: translate(-500px, 0); -moz-transform: translate(-500px, 0); -ms-transform: translate(-500px, 0); -o-transform: translate(-500px, 0); transform: translate(-500px, 0); }
 
