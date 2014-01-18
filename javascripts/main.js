@@ -102,7 +102,7 @@
 
   getActivePlows = function(time, callback) {
     var plowPositions;
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + "?since=" + time + "&callback=?"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + "?since=" + time));
     plowPositions.onValue(function(json) {
       return callback(time, json);
     });
@@ -113,7 +113,7 @@
 
   createPlowTrail = function(time, plowId, plowTrailColor) {
     var plowPositions;
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=30&callback=?"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=5"));
     plowPositions.onValue(function(json) {
       return addMapLine(json, plowTrailColor);
     });

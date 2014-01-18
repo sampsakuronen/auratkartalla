@@ -64,12 +64,12 @@ clearMap = ->
   _.each(activeMarkers, (marker)-> marker.setMap(null))
 
 getActivePlows = (time, callback)->
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}&callback=?"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
   plowPositions.onValue((json)-> callback(time, json))
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, plowTrailColor)->
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=30&callback=?"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=5"))
   plowPositions.onValue((json)-> addMapLine(json, plowTrailColor))
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
 
