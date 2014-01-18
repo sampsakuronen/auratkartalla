@@ -30,6 +30,7 @@ a:active { color: #005675; }
 #info .expanded .info-container { display: inline-block; padding: 40px 0; }
 #info .expanded p, #info .expanded ul { padding-bottom: 1em; }
 #info .expanded p:last-child, #info .expanded ul:last-child { padding-bottom: 0; }
+#info .copyright { margin-top: 0.75em; }
 #info.off .expanded { -webkit-transform: translate(-500px, 0); -moz-transform: translate(-500px, 0); -ms-transform: translate(-500px, 0); -o-transform: translate(-500px, 0); transform: translate(-500px, 0); }
 
 #legend { position: fixed; z-index: 250; bottom: 0; right: 0; width: 100%; max-width: 200px; padding: 30px; background: black; color: white; font-size: 16px; line-height: 20px; -webkit-border-radius: 10px 0 0 0; -moz-border-radius: 10px 0 0 0; -ms-border-radius: 10px 0 0 0; -o-border-radius: 10px 0 0 0; border-radius: 10px 0 0 0; -webkit-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); -moz-box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); box-shadow: 0 0 1em rgba(255, 255, 255, 0.1); }
