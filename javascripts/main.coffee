@@ -1,4 +1,4 @@
-snowAPI = 'http://dev.stadilumi.fi/api/v1/snowplow/'
+snowAPI = "http://dev.hel.fi/aura/v1/snowplow/"
 activePolylines = []
 activeMarkers = []
 map = null
