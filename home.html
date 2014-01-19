@@ -14,12 +14,6 @@
   <link href="https://fonts.googleapis.com/css?family=Exo+2:400,800" rel="stylesheet" type="text/css" />
   <link href="stylesheets/main.css" rel="stylesheet" type="text/css" />
 
-  <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.0/Bacon.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8fulJvcoguhE_XQOpClskS108FUhHK-U&sensor=false"></script>
-  <script src="javascripts/main.js"></script>
-
   <meta property="og:title" content="Helsingin talvihoidon työt kartalla" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="http://www.auratkartalla.com" />
@@ -66,7 +60,6 @@
 
     ga('create', 'UA-47272336-1', 'auratkartalla.com');
     ga('send', 'pageview');
-
   </script>
   <a href="https://plus.google.com/100723818959801774365" rel="publisher" style="position:absolute;z-index:-1">Google+</a>
   <div id="map-canvas"></div>
@@ -84,14 +77,28 @@
         </p>
         <p class="copyright">
           <a href="https://github.com/sampsakuronen/snowplow-visualization" target="_blank" title="Auratkartalla.com codebase on Github">Codebase</a><br/>
-          <a href="https://www.twitter.com/auratkartalla" target="_blank" title="Auratkartalla.com on Twitter">Twitter: Aurat kartalla</a><br/>
-          <a href="https://www.twitter.com/sampsakuronen" target="_blank" title="Sampsa Kuronen on Twitter">Twitter: Sampsa Kuronen</a>
+          <a href="https://www.twitter.com/auratkartalla" target="_blank" title="Auratkartalla.com on Twitter">@auratkartalla</a><br/>
+          <a href="https://www.twitter.com/sampsakuronen" target="_blank" title="Sampsa Kuronen on Twitter">@sampsakuronen</a>
         </p>
       </div>
     </div>
   </div>
-  <div id="legend">
-    <ul>
+  <div id="visualization">
+    <h2>Näytä kartalla</h2>
+    <nav id="time-filters">
+      <ul>
+        <li data-hours="1">1 tunti</li>
+        <li data-hours="2">2 tuntia</li>
+        <li data-hours="8">8 tuntia</li>
+        <li data-hours="12">12 tuntia</li>
+        <li data-hours="24" class="active">24 tuntia</li>
+        <li data-hours="72">3 vuorokautta</li>
+        <li data-hours="168">1 viikko</li>
+        <li data-hours="720">1 kuukausi</li>
+      </ul>
+    </nav>
+    <div id="notification"></div>
+    <ul id="legend">
       <li class="kv">Kevyen liikenteen väylät</li>
       <li class="hi">Hiekoitus</li>
       <li class="su">Suolaus</li>
@@ -99,18 +106,20 @@
       <li class="other">Muu</li>
     </ul>
   </div>
-  <nav id="time-filters">
-    <ul>
-      <li data-time="2">2 tuntia</li>
-      <li data-time="8">8 tuntia</li>
-      <li data-time="12">12 tuntia</li>
-      <li data-time="24" class="active">24 tuntia</li>
-      <li data-time="72">3 päivää</li>
-    </ul>
-  </nav>
-  <div id="notification"></div>
+  <div id="load-spinner">
+    <div id="followingBallsG_1" class="followingBallsG"></div>
+    <div id="followingBallsG_2" class="followingBallsG"></div>
+    <div id="followingBallsG_3" class="followingBallsG"></div>
+    <div id="followingBallsG_4" class="followingBallsG"></div>
+  </div>
   <div id="facebook-like"><div class="fb-like" data-href="http://www.auratkartalla.com/" data-width="80" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false" data-colorscheme="dark"></div></div>
   <div id="fb-root"></div>
+
+  <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="javascripts/Bacon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8fulJvcoguhE_XQOpClskS108FUhHK-U&sensor=false"></script>
+  <script src="javascripts/main.js"></script>
   <script>(function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;

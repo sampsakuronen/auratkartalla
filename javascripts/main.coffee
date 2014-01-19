@@ -12,8 +12,8 @@ initializeGoogleMaps = (callback, time)->
     disableDefaultUI: true
     zoomControl: true
     zoomControlOptions:
-      style: google.maps.ZoomControlStyle.LARGE,
-      position: google.maps.ControlPosition.LEFT_BOTTOM
+      style: google.maps.ZoomControlStyle.SMALL
+      position: google.maps.ControlPosition.RIGHT_BOTTOM
 
   styles = [
     "stylers": [
@@ -94,32 +94,24 @@ clearMap = ->
   _.map(activePolylines, (polyline)-> polyline.setMap(null))
   _.map(activeMarkers, (marker)-> marker.setMap(null))
 
-showNotification = (notificationText)->
+displayNotification = (notificationText)->
   $notification = $("#notification")
-  $notification.empty().text(notificationText).addClass("active").delay(4000).queue(-> $(this).removeClass("active"))
-  $notification.asEventStream('click').onValue(-> $notification.removeClass("active"))
+  $notification.empty().text(notificationText).slideDown(800).delay(5000).slideUp(800)
 
 getActivePlows = (time, callback)->
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
-  plowPositions.onValue((json)->
-    if json.length isnt 0
-      callback(time, json)
-    else showNotification("Yksikään ajoneuvo ei ole työskennellyt valitulla ajalla. Valitse jokin muu aika!")
-  )
+  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else displayNotification("Ei näytettävää valitulla ajalla"))
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=2"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=5"))
 
-  plowPositions.onValue((json)->
-    if json.length isnt 0
-      _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
-    else
-      showNotification("Aura #{plowId} ei ole työskennellyt tänä aikana.")
+  plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
+    _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
   )
-  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{error}"))
+  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.strinfiy(error)}"))
 
 createPlowsOnMap = (time, json)->
   _.each(json, (x)->
@@ -133,12 +125,13 @@ populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createP
 $(document).ready ->
   initializeGoogleMaps(populateMap, 24)
 
-  $("#time-filters li").asEventStream("click").onValue((e)->
+  $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
     e.preventDefault()
-    clearMap()
-    populateMap($(e.currentTarget).data('time'))
+    $("#notification").stop(true, false).slideUp(200)
     $("#time-filters li").removeClass("active")
     $(e.currentTarget).addClass("active")
+    clearMap()
+    populateMap($(e.currentTarget).data("hours"))
   )
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->
@@ -172,5 +165,5 @@ console.log("%c
             2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
                               \\/           \\/              \\/    \\/     \\/     \n
                   https://github.com/sampsakuronen/snowplow-visualization      \n
-                                                                               ", 'background: #001e29; color: #00bbff')
+                                                                               ", "background: #001e29; color: #00bbff")
 console.log("It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/")

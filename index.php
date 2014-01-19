@@ -1,1 +1,4 @@
-<?php include_once("home.html"); ?>
+<?php
+  ob_start("ob_gzhandler");
+  include_once("home.html");
+?>
