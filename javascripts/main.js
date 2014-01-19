@@ -97,6 +97,7 @@
       map: map,
       icon: snowPlowMarker
     });
+    marker.setClickable(false);
     activeMarkers.push(marker);
     return marker;
   };
@@ -171,7 +172,7 @@
         return x.events[0];
       }), []);
     };
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=5"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=6"));
     plowPositions.filter(function(json) {
       return json.length !== 0;
     }).onValue(function(json) {

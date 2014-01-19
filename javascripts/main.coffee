@@ -62,6 +62,8 @@ dropMapMarker = (plowJobColor, lat, lng) ->
     icon: snowPlowMarker
   )
 
+  marker.setClickable(false)
+
   activeMarkers.push(marker)
   marker
 
@@ -106,7 +108,7 @@ getActivePlows = (time, callback)->
 createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=5"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=6"))
 
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
