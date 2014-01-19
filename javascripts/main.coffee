@@ -71,7 +71,7 @@ getPlowJobColor = (job)->
     when "au" then "#f2c12e"
     when "su" then "#d93425"
     when "hi" then "#ffffff"
-    else "#04bfbf"
+    else "#6c00ff"
 
 addMapLine = (plowData, plowJobId)->
   plowTrailColor = getPlowJobColor(plowJobId)
@@ -111,7 +111,7 @@ getActivePlows = (time, callback)->
 createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=3"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=2"))
 
   plowPositions.onValue((json)->
     if json.length isnt 0

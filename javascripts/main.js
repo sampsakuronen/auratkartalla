@@ -112,7 +112,7 @@
       case "hi":
         return "#ffffff";
       default:
-        return "#04bfbf";
+        return "#6c00ff";
     }
   };
 
@@ -176,7 +176,7 @@
         return x.events[0];
       }), []);
     };
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=3"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=2"));
     plowPositions.onValue(function(json) {
       if (json.length !== 0) {
         return _.map(splitPlowDataByJob(json), function(oneJobOfThisPlow) {
