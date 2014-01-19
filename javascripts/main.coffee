@@ -40,7 +40,7 @@ dropMapMarker = (plowJobColor, lat, lng) ->
     path: "M10 10 H 90 V 90 H 10 L 10 10"
     fillColor: plowJobColor
     strokeColor: plowJobColor
-    strokeWeight: 7
+    strokeWeight: 9
     strokeOpacity: 0.8
     scale: 0.01
 
@@ -61,7 +61,7 @@ addMapLine = (plowData, plowTrailColor) ->
     path: polylinePath
     geodesic: true
     strokeColor: plowTrailColor
-    strokeWeight: 2
+    strokeWeight: 1.5
     strokeOpacity: 0.6
   )
 
