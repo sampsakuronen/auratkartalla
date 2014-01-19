@@ -147,8 +147,10 @@ $(document).ready ->
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->
     e.preventDefault()
+    $.cookie("info_closed", "true", { expires: 7 })
     $("#info").toggleClass("off")
   )
+  if $.cookie("info_closed")then $("#info").addClass("off")
 
 
 

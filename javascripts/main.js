@@ -213,10 +213,16 @@
       clearMap();
       return populateMap($(e.currentTarget).data("hours"));
     });
-    return $("#info-close, #info-button").asEventStream("click").onValue(function(e) {
+    $("#info-close, #info-button").asEventStream("click").onValue(function(e) {
       e.preventDefault();
+      $.cookie("info_closed", "true", {
+        expires: 7
+      });
       return $("#info").toggleClass("off");
     });
+    if ($.cookie("info_closed")) {
+      return $("#info").addClass("off");
+    }
   });
 
   console.log("%c                                                                               \n      _________                            .__                                 \n     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n                              \\/           \\/              \\/    \\/     \\/     \n                  https://github.com/sampsakuronen/snowplow-visualization      \n                                                                               ", "background: #001e29; color: #00bbff");
