@@ -101,16 +101,24 @@ displayNotification = (notificationText)->
   $notification.empty().text(notificationText).slideDown(800).delay(5000).slideUp(800)
 
 getActivePlows = (time, callback)->
+  $("#load-spinner").fadeIn(400)
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
-  plowPositions.onValue((json)-> if json.length isnt 0 then callback(time, json) else displayNotification("Ei näytettävää valitulla ajalla"))
+  plowPositions.onValue((json)->
+    if json.length isnt 0
+      callback(time, json)
+    else
+      displayNotification("Ei näytettävää valitulla ajalla")
+    $("#load-spinner").fadeOut(400)
+  )
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
+  $("#load-spinner").fadeIn(400)
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=6"))
-
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
+    $("#load-spinner").fadeOut(400)
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
   )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.strinfiy(error)}"))
@@ -130,6 +138,7 @@ $(document).ready ->
   $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
     e.preventDefault()
     $("#notification").stop(true, false).slideUp(200)
+    $("#load-spinner").stop(true, false).fadeOut(200)
     $("#time-filters li").removeClass("active")
     $(e.currentTarget).addClass("active")
     clearMap()

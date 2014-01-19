@@ -152,13 +152,15 @@
 
   getActivePlows = function(time, callback) {
     var plowPositions;
+    $("#load-spinner").fadeIn(400);
     plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + "?since=" + time));
     plowPositions.onValue(function(json) {
       if (json.length !== 0) {
-        return callback(time, json);
+        callback(time, json);
       } else {
-        return displayNotification("Ei näytettävää valitulla ajalla");
+        displayNotification("Ei näytettävää valitulla ajalla");
       }
+      return $("#load-spinner").fadeOut(400);
     });
     return plowPositions.onError(function(error) {
       return console.error("Failed to fetch active snowplows: " + (JSON.stringify(error)));
@@ -172,10 +174,12 @@
         return x.events[0];
       }), []);
     };
+    $("#load-spinner").fadeIn(400);
     plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=6"));
     plowPositions.filter(function(json) {
       return json.length !== 0;
     }).onValue(function(json) {
+      $("#load-spinner").fadeOut(400);
       return _.map(splitPlowDataByJob(json), function(oneJobOfThisPlow) {
         return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
       });
@@ -203,6 +207,7 @@
     $("#time-filters li").asEventStream("click").throttle(1000).onValue(function(e) {
       e.preventDefault();
       $("#notification").stop(true, false).slideUp(200);
+      $("#load-spinner").stop(true, false).fadeOut(200);
       $("#time-filters li").removeClass("active");
       $(e.currentTarget).addClass("active");
       clearMap();
