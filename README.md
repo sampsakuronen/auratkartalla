@@ -1,3 +1,5 @@
+_Omistettu rakkaalle Ainolle, joka jaksaa kannustaa mua tekemään sitä mistä tykkään - nörttäämään._
+
 # Helsinki snowplow visualization
 This app is running at http://www.auratkartalla.com/
 
