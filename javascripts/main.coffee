@@ -129,7 +129,9 @@ createPlowsOnMap = (time, json)->
     dropMapMarker(getPlowJobColor(x.last_loc.events[0]), x.last_loc.coords[1], x.last_loc.coords[0])
   )
 
-populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createPlowsOnMap(time, json))
+populateMap = (time)->
+  clearMap()
+  getActivePlows("#{time}hours+ago", (time, json)-> createPlowsOnMap(time, json))
 
 
 $(document).ready ->
@@ -139,19 +141,20 @@ $(document).ready ->
 
   $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
     e.preventDefault()
+
     $("#notification").stop(true, false).slideUp(200)
     $("#load-spinner").stop(true, false).fadeOut(200)
     $("#time-filters li").removeClass("active")
     $("#visualization").removeClass("on")
     $(e.currentTarget).addClass("active")
-    clearMap()
+
     populateMap($(e.currentTarget).data("hours"))
   )
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->
     e.preventDefault()
-    $.cookie("info_closed", "true", { expires: 7 })
     $("#info").toggleClass("off")
+    $.cookie("info_closed", "true", { expires: 7 })
   )
 
   $("#visualization-close, #visualization-button").asEventStream("click").onValue((e)->

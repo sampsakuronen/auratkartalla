@@ -197,6 +197,7 @@
   };
 
   populateMap = function(time) {
+    clearMap();
     return getActivePlows("" + time + "hours+ago", function(time, json) {
       return createPlowsOnMap(time, json);
     });
@@ -214,15 +215,14 @@
       $("#time-filters li").removeClass("active");
       $("#visualization").removeClass("on");
       $(e.currentTarget).addClass("active");
-      clearMap();
       return populateMap($(e.currentTarget).data("hours"));
     });
     $("#info-close, #info-button").asEventStream("click").onValue(function(e) {
       e.preventDefault();
-      $.cookie("info_closed", "true", {
+      $("#info").toggleClass("off");
+      return $.cookie("info_closed", "true", {
         expires: 7
       });
-      return $("#info").toggleClass("off");
     });
     return $("#visualization-close, #visualization-button").asEventStream("click").onValue(function(e) {
       e.preventDefault();
