@@ -116,7 +116,7 @@ createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
   $("#load-spinner").fadeIn(800)
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=6"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4"))
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
     $("#load-spinner").fadeOut(800)

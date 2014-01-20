@@ -175,7 +175,7 @@
       }), []);
     };
     $("#load-spinner").fadeIn(800);
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=6"));
+    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=4"));
     plowPositions.filter(function(json) {
       return json.length !== 0;
     }).onValue(function(json) {
