@@ -78,18 +78,29 @@ a
     .expanded
       +translate(-500px, 0)
 
-#visualization
+#visualization-button, #visualization
   position: fixed
-  z-index: 200
   top: 1%
   right: 0
-  max-width: 250px
   width: 100%
   background: #000
   color: #fff
-  padding: 30px
+  cursor: pointer
   +border-radius(10px 0 0 10px)
   +box-shadow(0 0 1em rgba(255,255,255, 0.1))
+
+#visualization-button
+  z-index: 290
+  max-width: 50px
+  line-height: 40px
+  text-align: center
+  font-size: 30px
+
+#visualization
+  z-index: 300
+  max-width: 250px
+  padding: 30px
+  +transition(all 1s ease-in-out)
   #legend
     list-style: none
     li
@@ -132,6 +143,20 @@ a
     #time-range-current
       display: block
       text-align: center
+  #visualization-close
+    position: absolute
+    top: 0
+    right: 0
+    background: inherit
+    color: inherit
+    border: 0
+    outline: none
+    font-size: 14px
+    padding: 1em
+    font-family: inherit
+    cursor: pointer
+  &.on
+    +translate(0, 0)
 
 #notification
   display: none
@@ -143,14 +168,17 @@ a
 
 #facebook-like
   position: fixed
-  bottom: 20px
-  left: 10px
+  bottom: 33px
+  left: 6px
 
 @media screen and (max-width: 320px)
   #info
     .expanded
       padding-left: 10px
       padding-right: 10px
+
+  #visualization
+    +translate(500px, 0)
 
 
 // Load spinner animation from http://cssload.net/

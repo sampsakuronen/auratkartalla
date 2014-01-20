@@ -203,6 +203,9 @@
   };
 
   $(document).ready(function() {
+    if ($.cookie("info_closed")) {
+      $("#info").addClass("off");
+    }
     initializeGoogleMaps(populateMap, 24);
     $("#time-filters li").asEventStream("click").throttle(1000).onValue(function(e) {
       e.preventDefault();
@@ -220,9 +223,10 @@
       });
       return $("#info").toggleClass("off");
     });
-    if ($.cookie("info_closed")) {
-      return $("#info").addClass("off");
-    }
+    return $("#visualization-close, #visualization-button").asEventStream("click").onValue(function(e) {
+      e.preventDefault();
+      return $("#visualization").toggleClass("on");
+    });
   });
 
   console.log("%c                                                                               \n      _________                            .__                                 \n     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n            \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n                              \\/           \\/              \\/    \\/     \\/     \n                  https://github.com/sampsakuronen/snowplow-visualization      \n                                                                               ", "background: #001e29; color: #00bbff");

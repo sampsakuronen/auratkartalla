@@ -133,6 +133,8 @@ populateMap = (time)-> getActivePlows("#{time}hours+ago", (time, json)-> createP
 
 
 $(document).ready ->
+  if $.cookie("info_closed") then $("#info").addClass("off")
+
   initializeGoogleMaps(populateMap, 24)
 
   $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
@@ -150,7 +152,11 @@ $(document).ready ->
     $.cookie("info_closed", "true", { expires: 7 })
     $("#info").toggleClass("off")
   )
-  if $.cookie("info_closed")then $("#info").addClass("off")
+
+  $("#visualization-close, #visualization-button").asEventStream("click").onValue((e)->
+    e.preventDefault()
+    $("#visualization").toggleClass("on")
+  )
 
 
 
