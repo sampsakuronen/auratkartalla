@@ -185,7 +185,7 @@
       });
     });
     return plowPositions.onError(function(error) {
-      return console.error("Failed to create snowplow trail for plow " + plowId + ": " + (JSON.strinfiy(error)));
+      return console.error("Failed to create snowplow trail for plow " + plowId + ": " + (JSON.stringify(error)));
     });
   };
 

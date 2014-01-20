@@ -121,7 +121,7 @@ createPlowTrail = (time, plowId, historyData)->
     $("#load-spinner").fadeOut(400)
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
   )
-  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.strinfiy(error)}"))
+  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
 
 createPlowsOnMap = (time, json)->
   _.each(json, (x)->
