@@ -118,8 +118,8 @@ createPlowTrail = (time, plowId, historyData)->
   $("#load-spinner").fadeIn(400)
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=6"))
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
-    $("#load-spinner").fadeOut(400)
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
+    $("#load-spinner").fadeOut(400)
   )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
 

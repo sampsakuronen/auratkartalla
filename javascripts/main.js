@@ -179,10 +179,10 @@
     plowPositions.filter(function(json) {
       return json.length !== 0;
     }).onValue(function(json) {
-      $("#load-spinner").fadeOut(400);
-      return _.map(splitPlowDataByJob(json), function(oneJobOfThisPlow) {
+      _.map(splitPlowDataByJob(json), function(oneJobOfThisPlow) {
         return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
       });
+      return $("#load-spinner").fadeOut(400);
     });
     return plowPositions.onError(function(error) {
       return console.error("Failed to create snowplow trail for plow " + plowId + ": " + (JSON.stringify(error)));
