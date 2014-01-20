@@ -142,6 +142,7 @@ $(document).ready ->
     $("#notification").stop(true, false).slideUp(200)
     $("#load-spinner").stop(true, false).fadeOut(200)
     $("#time-filters li").removeClass("active")
+    $("#visualization").removeClass("on")
     $(e.currentTarget).addClass("active")
     clearMap()
     populateMap($(e.currentTarget).data("hours"))
