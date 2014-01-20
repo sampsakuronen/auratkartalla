@@ -155,8 +155,6 @@ a
     padding: 1em
     font-family: inherit
     cursor: pointer
-  &.on
-    +translate(0, 0)
 
 #notification
   display: none
@@ -179,6 +177,8 @@ a
 
   #visualization
     +translate(500px, 0)
+    &.on
+      +translate(0, 0)
 
 
 // Load spinner animation from http://cssload.net/
