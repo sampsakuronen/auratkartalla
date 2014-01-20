@@ -108,18 +108,18 @@ getActivePlows = (time, callback)->
       callback(time, json)
     else
       displayNotification("Ei näytettävää valitulla ajalla")
-    $("#load-spinner").fadeOut(400)
+    $("#load-spinner").fadeOut(800)
   )
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
 
-  $("#load-spinner").fadeIn(400)
+  $("#load-spinner").fadeIn(800)
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=6"))
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
     _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
-    $("#load-spinner").fadeOut(400)
+    $("#load-spinner").fadeOut(800)
   )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
 
@@ -135,7 +135,7 @@ populateMap = (time)->
 
 
 $(document).ready ->
-  if $.cookie("info_closed") then $("#info").addClass("off")
+  $("#info").addClass("off") if $.cookie("info_closed")
 
   initializeGoogleMaps(populateMap, 24)
 

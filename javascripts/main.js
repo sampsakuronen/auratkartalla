@@ -160,7 +160,7 @@
       } else {
         displayNotification("Ei näytettävää valitulla ajalla");
       }
-      return $("#load-spinner").fadeOut(400);
+      return $("#load-spinner").fadeOut(800);
     });
     return plowPositions.onError(function(error) {
       return console.error("Failed to fetch active snowplows: " + (JSON.stringify(error)));
@@ -174,7 +174,7 @@
         return x.events[0];
       }), []);
     };
-    $("#load-spinner").fadeIn(400);
+    $("#load-spinner").fadeIn(800);
     plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=6"));
     plowPositions.filter(function(json) {
       return json.length !== 0;
@@ -182,7 +182,7 @@
       _.map(splitPlowDataByJob(json), function(oneJobOfThisPlow) {
         return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
       });
-      return $("#load-spinner").fadeOut(400);
+      return $("#load-spinner").fadeOut(800);
     });
     return plowPositions.onError(function(error) {
       return console.error("Failed to create snowplow trail for plow " + plowId + ": " + (JSON.stringify(error)));
