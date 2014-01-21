@@ -112,21 +112,28 @@ getActivePlows = (time, callback)->
   )
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
-createPlowTrail = (time, plowId, historyData)->
-  splitPlowDataByJob = (plowData)-> _.groupBy(plowData.history, ((x)-> x.events[0]), [])
+createIndividualPlowTrail = (time, plowId, historyData)->
+  splitPlowDataByJob = (plowData)->
+    _.groupBy(plowData.history, ((plow)-> plow.events[0]), [])
+  filterUnwantedJobs = (groupedPlowData)->
+    whatJobsAreSelected = _.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job")))
+    console.log whatJobsAreSelected
+    groupedPlowData unless _.some(whatJobsAreSelected, _.partial(_.contains, _.keys(groupedPlowData)))
 
   $("#load-spinner").fadeIn(800)
+
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4"))
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
-    _.map(splitPlowDataByJob(json), (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
+    splittedDataWithoutUnwantedJobs = filterUnwantedJobs(splitPlowDataByJob(json))
+    _.map(splittedDataWithoutUnwantedJobs, (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
     $("#load-spinner").fadeOut(800)
   )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
 
 createPlowsOnMap = (time, json)->
   _.each(json, (x)->
-    createPlowTrail(time, x.id, json)
-    dropMapMarker(getPlowJobColor(x.last_loc.events[0]), x.last_loc.coords[1], x.last_loc.coords[0])
+    createIndividualPlowTrail(time, x.id, json)
+    # dropMapMarker(getPlowJobColor(x.last_loc.events[0]), x.last_loc.coords[1], x.last_loc.coords[0])
   )
 
 populateMap = (time)->
@@ -135,28 +142,43 @@ populateMap = (time)->
 
 
 $(document).ready ->
+  clearUI = ->
+    $("#notification").stop(true, false).slideUp(200)
+    $("#load-spinner").stop(true, false).fadeOut(200)
+
   $("#info").addClass("off") if $.cookie("info_closed")
 
   initializeGoogleMaps(populateMap, 24)
 
   $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
     e.preventDefault()
+    clearUI()
 
-    $("#notification").stop(true, false).slideUp(200)
-    $("#load-spinner").stop(true, false).fadeOut(200)
     $("#time-filters li").removeClass("active")
     $("#visualization").removeClass("on")
-    $(e.currentTarget).addClass("active")
 
     populateMap($(e.currentTarget).data("hours"))
   )
+
+  $("#legend li").asEventStream("click").onValue((e)->
+    e.preventDefault()
+    clearUI()
+
+    $job = $(e.currentTarget)
+    if $job.attr("data-selected") is "true"
+      $job.attr("data-selected", "false")
+    else
+      $job.attr("data-selected", "true")
+
+    populateMap($("#time-filters .active").data("hours"))
+  )
+
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->
     e.preventDefault()
     $("#info").toggleClass("off")
     $.cookie("info_closed", "true", { expires: 7 })
   )
-
   $("#visualization-close, #visualization-button").asEventStream("click").onValue((e)->
     e.preventDefault()
     $("#visualization").toggleClass("on")
