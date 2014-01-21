@@ -3,6 +3,8 @@ activePolylines = []
 activeMarkers = []
 map = null
 
+PLOW_MAX_SPEED = 120
+
 initializeGoogleMaps = (callback, time)->
   helsinkiCenter = new google.maps.LatLng(60.193084, 24.940338)
 
@@ -75,9 +77,56 @@ getPlowJobColor = (job)->
     when "hi" then "#ffffff"
     else "#6c00ff"
 
+toRad = (x)-> x * Math.PI / 180;
+
+# lat/lng pair to distance (km)
+distance = (lat1, lng1, lat2, lng2)->
+  R = 6371;
+  lat1rad = toRad(lat1)
+  lat2rad = toRad(lat2)
+  lng1rad = toRad(lng1)
+  lng2rad = toRad(lng2)
+  x = (lng2rad - lng1rad) * Math.cos((lat1rad + lat2rad) / 2)
+  y = (lat2rad - lat1rad)
+  Math.sqrt((x * x) + (y * y)) * R
+
+# [1, 2, 3] -> [[1, 2], [2, 3]]
+pair = (arr)->
+  if arr.length < 2
+    []
+  else
+    _.range(2, arr.length + 1).map((i)->
+      arr.slice(i - 2, i))
+
+# [[1, 2], [2, 3]] -> [1, 2, 3]
+unpair = (arr)->
+  if arr.length < 1
+    []
+  else
+    arr.map(_.first).concat([_.last(_.last(arr))])
+
+msToH = (ms)->
+  ms / 3600000
+
 addMapLine = (plowData, plowJobId)->
   plowTrailColor = getPlowJobColor(plowJobId)
-  polylinePath = _.reduce(plowData, ((accu, x)->
+
+  filteredPlowData = unpair(pair(plowData)
+    .map((pair)->
+      [x1, x2] = pair
+
+      d = distance(x1.coords[1], x1.coords[0], x2.coords[1], x2.coords[0])
+      t = msToH(new Date(x2.timestamp) - new Date(x1.timestamp))
+      
+      {
+        speed: d / t,
+        pair: pair
+      })
+    .filter((x)->
+      x.speed < PLOW_MAX_SPEED)
+    .map((x)-> x.pair))
+
+  polylinePath = _.reduce(filteredPlowData, ((accu, x)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
 
