@@ -175,12 +175,11 @@
       }), []);
     };
     filterUnwantedJobs = function(groupedPlowData) {
-      var whatJobsAreSelected;
-      whatJobsAreSelected = _.map($("#legend [data-selected='false']"), (function(x) {
-        return $(x).data("job");
-      }));
-      console.log(whatJobsAreSelected);
-      if (!_.some(whatJobsAreSelected, _.partial(_.contains, _.keys(groupedPlowData)))) {
+      var whatJobsAreDeSelected;
+      whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), (function(x) {
+        return $(x).data("job").split(", ");
+      })));
+      if (!_.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))) {
         return groupedPlowData;
       }
     };

@@ -116,9 +116,8 @@ createIndividualPlowTrail = (time, plowId, historyData)->
   splitPlowDataByJob = (plowData)->
     _.groupBy(plowData.history, ((plow)-> plow.events[0]), [])
   filterUnwantedJobs = (groupedPlowData)->
-    whatJobsAreSelected = _.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job")))
-    console.log whatJobsAreSelected
-    groupedPlowData unless _.some(whatJobsAreSelected, _.partial(_.contains, _.keys(groupedPlowData)))
+    whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job").split(", "))))
+    groupedPlowData unless _.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))
 
   $("#load-spinner").fadeIn(800)
 
