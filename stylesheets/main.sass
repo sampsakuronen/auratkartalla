@@ -173,6 +173,10 @@ a
   bottom: 33px
   left: 6px
 
+@media screen and (max-width: 769px)
+  [data-hours="168"]
+    display: none !important
+
 @media screen and (max-width: 500px)
   #info
     .expanded
@@ -185,9 +189,6 @@ a
       +translate(0, 0)
     #visualization-close
       display: block
-
-  [data-hours="168"]
-    display: none !important
 
 
 // Load spinner animation from http://cssload.net/

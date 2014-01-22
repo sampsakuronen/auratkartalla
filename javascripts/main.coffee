@@ -47,25 +47,25 @@ initializeGoogleMaps = (callback, time)->
 
   callback(time)
 
-dropMapMarker = (plowJobColor, lat, lng) ->
-  snowPlowMarker =
-    path: "M10 10 H 90 V 90 H 10 L 10 10"
-    fillColor: plowJobColor
-    strokeColor: plowJobColor
-    strokeWeight: 9
-    strokeOpacity: 0.8
-    scale: 0.01
+# dropMapMarker = (plowJobColor, lat, lng) ->
+#   snowPlowMarker =
+#     path: "M10 10 H 90 V 90 H 10 L 10 10"
+#     fillColor: plowJobColor
+#     strokeColor: plowJobColor
+#     strokeWeight: 9
+#     strokeOpacity: 0.8
+#     scale: 0.01
 
-  marker = new google.maps.Marker(
-    position: new google.maps.LatLng(lat, lng)
-    map: map
-    icon: snowPlowMarker
-  )
+#   marker = new google.maps.Marker(
+#     position: new google.maps.LatLng(lat, lng)
+#     map: map
+#     icon: snowPlowMarker
+#   )
 
-  marker.setClickable(false)
+#   marker.setClickable(false)
 
-  activeMarkers.push(marker)
-  marker
+#   activeMarkers.push(marker)
+#   marker
 
 getPlowJobColor = (job)->
   switch job
@@ -196,7 +196,7 @@ $(document).ready ->
 
 
 
-console.log("%c
+console.log("
                                                                                \n
       _________                            .__                                 \n
      /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n
@@ -210,5 +210,5 @@ console.log("%c
             2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n
                               \\/           \\/              \\/    \\/     \\/     \n
                   https://github.com/sampsakuronen/snowplow-visualization      \n
-                                                                               ", "background: #001e29; color: #00bbff")
+                                                                               ")
 console.log("It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/")
