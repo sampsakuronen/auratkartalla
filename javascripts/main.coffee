@@ -113,18 +113,17 @@ getActivePlows = (time, callback)->
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createIndividualPlowTrail = (time, plowId, historyData)->
-  splitPlowDataByJob = (plowData)->
-    _.groupBy(plowData.history, ((plow)-> plow.events[0]), [])
-  filterUnwantedJobs = (groupedPlowData)->
-    whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job").split(", "))))
-    groupedPlowData unless _.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))
+  # splitPlowDataByJob = (plowData)->
+  #   _.groupBy(plowData.history, ((plow)-> plow.events[0]), [])
+  # filterUnwantedJobs = (groupedPlowData)->
+  #   whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job").split(", "))))
+  #   groupedPlowData unless _.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))
 
   $("#load-spinner").fadeIn(800)
 
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4"))
   plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
-    splittedDataWithoutUnwantedJobs = filterUnwantedJobs(splitPlowDataByJob(json))
-    _.map(splittedDataWithoutUnwantedJobs, (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
+    _.map(json, (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
     $("#load-spinner").fadeOut(800)
   )
   plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
@@ -160,18 +159,18 @@ $(document).ready ->
     populateMap($(e.currentTarget).data("hours"))
   )
 
-  $("#legend li").asEventStream("click").onValue((e)->
-    e.preventDefault()
-    clearUI()
+  # $("#legend li").asEventStream("click").onValue((e)->
+  #   e.preventDefault()
+  #   clearUI()
 
-    $job = $(e.currentTarget)
-    if $job.attr("data-selected") is "true"
-      $job.attr("data-selected", "false")
-    else
-      $job.attr("data-selected", "true")
+  #   $job = $(e.currentTarget)
+  #   if $job.attr("data-selected") is "true"
+  #     $job.attr("data-selected", "false")
+  #   else
+  #     $job.attr("data-selected", "true")
 
-    populateMap($("#time-filters .active").data("hours"))
-  )
+  #   populateMap($("#time-filters .active").data("hours"))
+  # )
 
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->

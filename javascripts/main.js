@@ -148,29 +148,13 @@
   };
 
   createIndividualPlowTrail = function(time, plowId, historyData) {
-    var filterUnwantedJobs, plowPositions, splitPlowDataByJob;
-    splitPlowDataByJob = function(plowData) {
-      return _.groupBy(plowData.history, (function(plow) {
-        return plow.events[0];
-      }), []);
-    };
-    filterUnwantedJobs = function(groupedPlowData) {
-      var whatJobsAreDeSelected;
-      whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), (function(x) {
-        return $(x).data("job").split(", ");
-      })));
-      if (!_.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))) {
-        return groupedPlowData;
-      }
-    };
+    var plowPositions;
     $("#load-spinner").fadeIn(800);
     plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=4"));
     plowPositions.filter(function(json) {
       return json.length !== 0;
     }).onValue(function(json) {
-      var splittedDataWithoutUnwantedJobs;
-      splittedDataWithoutUnwantedJobs = filterUnwantedJobs(splitPlowDataByJob(json));
-      _.map(splittedDataWithoutUnwantedJobs, function(oneJobOfThisPlow) {
+      _.map(json, function(oneJobOfThisPlow) {
         return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
       });
       return $("#load-spinner").fadeOut(800);
@@ -210,18 +194,6 @@
       $(e.currentTarget).addClass("active");
       $("#visualization").removeClass("on");
       return populateMap($(e.currentTarget).data("hours"));
-    });
-    $("#legend li").asEventStream("click").onValue(function(e) {
-      var $job;
-      e.preventDefault();
-      clearUI();
-      $job = $(e.currentTarget);
-      if ($job.attr("data-selected") === "true") {
-        $job.attr("data-selected", "false");
-      } else {
-        $job.attr("data-selected", "true");
-      }
-      return populateMap($("#time-filters .active").data("hours"));
     });
     $("#info-close, #info-button").asEventStream("click").onValue(function(e) {
       e.preventDefault();
