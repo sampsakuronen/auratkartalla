@@ -154,6 +154,7 @@ $(document).ready ->
     clearUI()
 
     $("#time-filters li").removeClass("active")
+    $(e.currentTarget).addClass("active")
     $("#visualization").removeClass("on")
 
     populateMap($(e.currentTarget).data("hours"))

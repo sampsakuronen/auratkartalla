@@ -227,6 +227,7 @@
       e.preventDefault();
       clearUI();
       $("#time-filters li").removeClass("active");
+      $(e.currentTarget).addClass("active");
       $("#visualization").removeClass("on");
       return populateMap($(e.currentTarget).data("hours"));
     });
