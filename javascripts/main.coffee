@@ -1,6 +1,5 @@
-snowAPI = "http://dev.hel.fi/aura/v1/snowplow/"
+snowAPI = "http://dev.hel.fi/auranew/v1/snowplow/"
 activePolylines = []
-activeMarkers = []
 map = null
 
 initializeGoogleMaps = (callback, time)->
@@ -47,26 +46,6 @@ initializeGoogleMaps = (callback, time)->
 
   callback(time)
 
-# dropMapMarker = (plowJobColor, lat, lng) ->
-#   snowPlowMarker =
-#     path: "M10 10 H 90 V 90 H 10 L 10 10"
-#     fillColor: plowJobColor
-#     strokeColor: plowJobColor
-#     strokeWeight: 9
-#     strokeOpacity: 0.8
-#     scale: 0.01
-
-#   marker = new google.maps.Marker(
-#     position: new google.maps.LatLng(lat, lng)
-#     map: map
-#     icon: snowPlowMarker
-#   )
-
-#   marker.setClickable(false)
-
-#   activeMarkers.push(marker)
-#   marker
-
 getPlowJobColor = (job)->
   switch job
     when "kv" then "#84ff00"
@@ -94,7 +73,6 @@ addMapLine = (plowData, plowJobId)->
 
 clearMap = ->
   _.map(activePolylines, (polyline)-> polyline.setMap(null))
-  _.map(activeMarkers, (marker)-> marker.setMap(null))
 
 displayNotification = (notificationText)->
   $notification = $("#notification")
@@ -102,7 +80,7 @@ displayNotification = (notificationText)->
 
 getActivePlows = (time, callback)->
   $("#load-spinner").fadeIn(400)
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}"))
+  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}&location_history=1"))
   plowPositions.onValue((json)->
     if json.length isnt 0
       callback(time, json)
@@ -113,12 +91,6 @@ getActivePlows = (time, callback)->
   plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
 
 createIndividualPlowTrail = (time, plowId, historyData)->
-  # splitPlowDataByJob = (plowData)->
-  #   _.groupBy(plowData.history, ((plow)-> plow.events[0]), [])
-  # filterUnwantedJobs = (groupedPlowData)->
-  #   whatJobsAreDeSelected = _.flatten(_.map($("#legend [data-selected='false']"), ((x)-> $(x).data("job").split(", "))))
-  #   groupedPlowData unless _.some(whatJobsAreDeSelected, _.partial(_.contains, _.keys(groupedPlowData)))
-
   $("#load-spinner").fadeIn(800)
 
   plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4"))
@@ -131,7 +103,6 @@ createIndividualPlowTrail = (time, plowId, historyData)->
 createPlowsOnMap = (time, json)->
   _.each(json, (x)->
     createIndividualPlowTrail(time, x.id, json)
-    # dropMapMarker(getPlowJobColor(x.last_loc.events[0]), x.last_loc.coords[1], x.last_loc.coords[0])
   )
 
 populateMap = (time)->
@@ -158,20 +129,6 @@ $(document).ready ->
 
     populateMap($(e.currentTarget).data("hours"))
   )
-
-  # $("#legend li").asEventStream("click").onValue((e)->
-  #   e.preventDefault()
-  #   clearUI()
-
-  #   $job = $(e.currentTarget)
-  #   if $job.attr("data-selected") is "true"
-  #     $job.attr("data-selected", "false")
-  #   else
-  #     $job.attr("data-selected", "true")
-
-  #   populateMap($("#time-filters .active").data("hours"))
-  # )
-
 
   $("#info-close, #info-button").asEventStream("click").onValue((e)->
     e.preventDefault()
