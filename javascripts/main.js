@@ -2,7 +2,7 @@
 (function() {
   var activePolylines, addMapLine, clearMap, createIndividualPlowTrail, createPlowsOnMap, displayNotification, getActivePlows, getPlowJobColor, initializeGoogleMaps, map, populateMap, snowAPI;
 
-  snowAPI = "http://dev.hel.fi/auranew/v1/snowplow/";
+  snowAPI = "http://dev.hel.fi/aura/v1/snowplow/";
 
   activePolylines = [];
 
