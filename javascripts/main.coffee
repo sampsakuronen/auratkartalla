@@ -31,6 +31,13 @@ initializeGoogleMaps = (callback, time)->
     "elementType": "labels"
     "stylers": [ "visibility": "off" ]
   ,
+    "featureType": "road.local"
+    "elementType": "labels.text.fill"
+    "stylers": [
+      { "visibility": "on" }
+      { "color": "#2b8aa9" }
+    ]
+  ,
     "featureType": "administrative.locality"
     "stylers": [ "visibility": "on" ]
   ,
