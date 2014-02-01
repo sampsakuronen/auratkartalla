@@ -117,7 +117,7 @@ $(document).ready ->
 
   $("#info").addClass("off") if $.cookie("info_closed")
 
-  initializeGoogleMaps(populateMap, 24)
+  initializeGoogleMaps(populateMap, 8)
 
   $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
     e.preventDefault()

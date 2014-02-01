@@ -181,7 +181,7 @@
     if ($.cookie("info_closed")) {
       $("#info").addClass("off");
     }
-    initializeGoogleMaps(populateMap, 24);
+    initializeGoogleMaps(populateMap, 8);
     $("#time-filters li").asEventStream("click").throttle(1000).onValue(function(e) {
       e.preventDefault();
       clearUI();
