@@ -80,25 +80,29 @@ displayNotification = (notificationText)->
 
 getActivePlows = (time, callback)->
   $("#load-spinner").fadeIn(400)
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}?since=#{time}&location_history=1"))
-  plowPositions.onValue((json)->
-    if json.length isnt 0
-      callback(time, json)
-    else
-      displayNotification("Ei näytettävää valitulla ajalla")
-    $("#load-spinner").fadeOut(800)
-  )
-  plowPositions.onError((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
+  $.getJSON("#{snowAPI}?since=#{time}&location_history=1")
+    .done((json)->
+      if json.length isnt 0
+        callback(time, json)
+      else
+        displayNotification("Ei näytettävää valitulla ajalla")
+      $("#load-spinner").fadeOut(800)
+    )
+    .fail((error)-> console.error("Failed to fetch active snowplows: #{JSON.stringify(error)}"))
+
 
 createIndividualPlowTrail = (time, plowId, historyData)->
   $("#load-spinner").fadeIn(800)
-
-  plowPositions = Bacon.fromPromise($.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4"))
-  plowPositions.filter((json)-> json.length isnt 0).onValue((json)->
-    _.map(json, (oneJobOfThisPlow)-> addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
-    $("#load-spinner").fadeOut(800)
-  )
-  plowPositions.onError((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
+  $.getJSON("#{snowAPI}#{plowId}?since=#{time}&temporal_resolution=4")
+    .done((json)->
+      if json.length isnt 0
+        _.map(json, (oneJobOfThisPlow)->
+          plowHasLastGoodEvent = oneJobOfThisPlow? and oneJobOfThisPlow[0]? and oneJobOfThisPlow[0].events? and oneJobOfThisPlow[0].events[0]?
+          if plowHasLastGoodEvent
+            addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]))
+        $("#load-spinner").fadeOut(800)
+    )
+    .fail((error)-> console.error("Failed to create snowplow trail for plow #{plowId}: #{JSON.stringify(error)}"))
 
 createPlowsOnMap = (time, json)->
   _.each(json, (x)->
@@ -119,7 +123,7 @@ $(document).ready ->
 
   initializeGoogleMaps(populateMap, 8)
 
-  $("#time-filters li").asEventStream("click").throttle(1000).onValue((e)->
+  $("#time-filters li").on("click", (e)->
     e.preventDefault()
     clearUI()
 
@@ -130,12 +134,12 @@ $(document).ready ->
     populateMap($(e.currentTarget).data("hours"))
   )
 
-  $("#info-close, #info-button").asEventStream("click").onValue((e)->
+  $("#info-close, #info-button").on("click", (e)->
     e.preventDefault()
     $("#info").toggleClass("off")
     $.cookie("info_closed", "true", { expires: 7 })
   )
-  $("#visualization-close, #visualization-button").asEventStream("click").onValue((e)->
+  $("#visualization-close, #visualization-button").on("click", (e)->
     e.preventDefault()
     $("#visualization").toggleClass("on")
   )

@@ -126,35 +126,33 @@
   };
 
   getActivePlows = function(time, callback) {
-    var plowPositions;
     $("#load-spinner").fadeIn(400);
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + "?since=" + time + "&location_history=1"));
-    plowPositions.onValue(function(json) {
+    return $.getJSON("" + snowAPI + "?since=" + time + "&location_history=1").done(function(json) {
       if (json.length !== 0) {
         callback(time, json);
       } else {
         displayNotification("Ei näytettävää valitulla ajalla");
       }
       return $("#load-spinner").fadeOut(800);
-    });
-    return plowPositions.onError(function(error) {
+    }).fail(function(error) {
       return console.error("Failed to fetch active snowplows: " + (JSON.stringify(error)));
     });
   };
 
   createIndividualPlowTrail = function(time, plowId, historyData) {
-    var plowPositions;
     $("#load-spinner").fadeIn(800);
-    plowPositions = Bacon.fromPromise($.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=4"));
-    plowPositions.filter(function(json) {
-      return json.length !== 0;
-    }).onValue(function(json) {
-      _.map(json, function(oneJobOfThisPlow) {
-        return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
-      });
-      return $("#load-spinner").fadeOut(800);
-    });
-    return plowPositions.onError(function(error) {
+    return $.getJSON("" + snowAPI + plowId + "?since=" + time + "&temporal_resolution=4").done(function(json) {
+      if (json.length !== 0) {
+        _.map(json, function(oneJobOfThisPlow) {
+          var plowHasLastGoodEvent;
+          plowHasLastGoodEvent = (oneJobOfThisPlow != null) && (oneJobOfThisPlow[0] != null) && (oneJobOfThisPlow[0].events != null) && (oneJobOfThisPlow[0].events[0] != null);
+          if (plowHasLastGoodEvent) {
+            return addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0]);
+          }
+        });
+        return $("#load-spinner").fadeOut(800);
+      }
+    }).fail(function(error) {
       return console.error("Failed to create snowplow trail for plow " + plowId + ": " + (JSON.stringify(error)));
     });
   };
@@ -182,7 +180,7 @@
       $("#info").addClass("off");
     }
     initializeGoogleMaps(populateMap, 8);
-    $("#time-filters li").asEventStream("click").throttle(1000).onValue(function(e) {
+    $("#time-filters li").on("click", function(e) {
       e.preventDefault();
       clearUI();
       $("#time-filters li").removeClass("active");
@@ -190,14 +188,14 @@
       $("#visualization").removeClass("on");
       return populateMap($(e.currentTarget).data("hours"));
     });
-    $("#info-close, #info-button").asEventStream("click").onValue(function(e) {
+    $("#info-close, #info-button").on("click", function(e) {
       e.preventDefault();
       $("#info").toggleClass("off");
       return $.cookie("info_closed", "true", {
         expires: 7
       });
     });
-    return $("#visualization-close, #visualization-button").asEventStream("click").onValue(function(e) {
+    return $("#visualization-close, #visualization-button").on("click", function(e) {
       e.preventDefault();
       return $("#visualization").toggleClass("on");
     });
