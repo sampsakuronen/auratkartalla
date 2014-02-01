@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
   <title>Aurat kartalla - Helsingin talvihoidon työt visualisoituna</title>
   <meta name="description" content="Lumiaurojen liikkeet kartalla. Kartalta löytyvät myös kevyen liikenteen väylien tilanne, hiekoitus- sekä suolausautojen liikkeet. Kannattaako tänään pyöräillä töihin? Katso!" />
   <meta name="rating" content="Safe For Kids" />
@@ -61,6 +62,10 @@
     ga('create', 'UA-47272336-1', 'auratkartalla.com');
     ga('send', 'pageview');
   </script>
+  <!--[if lte IE 9]>
+    <style>#info, #visualization, #info-button, #visualization-button {display: none !important} #upgrade-browser {display: block !important; margin: 5% auto; width: 50%; line-height: 24px; font-size: 18px}</style>
+    <div id="upgrade-browser">Tämä sivusto ei valitettavasti toimi Internet Explorerin versioilla 8 tai 9. Suosittelen sinua päivittämään selaimesi. Selaimen päivittäminen parantaa hurjasti sinun nettikokemusta ja tietoturvaa!<br/><br/><a href="https://www.google.com/intl/fi/chrome/browser/">Google Chromen voit ladata tästä.</a></div>
+  <![endif]-->
   <a href="https://plus.google.com/100723818959801774365" rel="publisher" style="position:absolute;z-index:-1">Google+</a>
   <div id="map-canvas"></div>
   <div id="info">
@@ -120,7 +125,7 @@
   <div id="facebook-like"><div class="fb-share-button" data-href="http://www.auratkartalla.com" data-width="200" data-type="box_count"></div></div>
   <div id="fb-root"></div>
 
-  <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>mai
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
   <script src="javascripts/underscore-min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8fulJvcoguhE_XQOpClskS108FUhHK-U&sensor=false"></script>
   <script src="javascripts/jquery.cookie.js"></script>
