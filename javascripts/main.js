@@ -100,6 +100,14 @@
         return "#d93425";
       case "hi":
         return "#ffffff";
+      case "hn":
+        return "#00a59b";
+      case "hs":
+        return "#910202";
+      case "ps":
+        return "#970899";
+      case "pe":
+        return "#132bbe";
       default:
         return "#6c00ff";
     }

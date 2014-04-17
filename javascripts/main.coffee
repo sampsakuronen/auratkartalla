@@ -59,6 +59,10 @@ getPlowJobColor = (job)->
     when "au" then "#f2c12e"
     when "su" then "#d93425"
     when "hi" then "#ffffff"
+    when "hn" then "#00a59b"
+    when "hs" then "#910202"
+    when "ps" then "#970899"
+    when "pe" then "#132bbe"
     else "#6c00ff"
 
 addMapLine = (plowData, plowJobId)->
