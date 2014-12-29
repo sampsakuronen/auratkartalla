@@ -14,9 +14,12 @@ h1
 
 h2
   font-weight: bold
+  margin-top: 1em
   padding-bottom: 0.5em
   margin-bottom: 0.5em
   border-bottom: 1px solid #333
+.no-top-margin
+  margin-top: 0
 
 a
   color: #00bbff
@@ -101,7 +104,7 @@ a
   max-width: 275px
   padding: 30px
   +transition(all 1s ease-in-out)
-  #legend
+  .legend
     list-style: none
     li
       line-height: 1.2em
@@ -131,7 +134,6 @@ a
     [data-selected="false"]
       +opacity(0.5)
   #time-filters
-    margin-bottom: 1em
     li
       display: inline-block
       margin-right: 0.25em
