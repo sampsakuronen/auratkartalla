@@ -6,12 +6,10 @@
       xsi:schemaLocation="
             http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with PRO Sitemap Service https://pro-sitemaps.com -->
-
   <url>
        <loc>http://www.auratkartalla.com/</loc>
        <lastmod>2014-01-18T13:37:58+00:00</lastmod>
-       <changefreq>daily</changefreq>
+       <changefreq>monthly</changefreq>
        <priority>1.0000</priority>
   </url>
 </urlset>
