@@ -130,7 +130,7 @@ $(document).ready ->
     $("#notification").stop(true, false).slideUp(200)
     $("#load-spinner").stop(true, false).fadeOut(200)
 
-  $("#info").addClass("off") if $.cookie("info_closed")
+  $("#info").addClass("off") if localStorage["auratkartalla.userHasClosedInfo"]
 
   initializeGoogleMaps(populateMap, 8)
 
@@ -148,7 +148,7 @@ $(document).ready ->
   $("#info-close, #info-button").on("click", (e)->
     e.preventDefault()
     $("#info").toggleClass("off")
-    $.cookie("info_closed", "true", { expires: 7 })
+    localStorage["auratkartalla.userHasClosedInfo"] = true
   )
   $("#visualization-close, #visualization-button").on("click", (e)->
     e.preventDefault()
