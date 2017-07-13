@@ -11,7 +11,8 @@ You can ignore index.php, it's only used to trigger Apache stack on Heroku.
 
 
 ## How to
-    gem install compass && npm install -g coffee-script (Sass 3.4.9 and Compass 1.0.1 tested, Coffee at 1.8.0)
+    gem install compass
+    npm install -g coffee-script (Sass 3.4.9 and Compass 1.0.1 tested, Coffee at 1.8.0)
     compass watch .
     coffee -cwo js/ coffee/main.coffee
     Launch a server (for example: python -m SimpleHTTPServer 8000)
