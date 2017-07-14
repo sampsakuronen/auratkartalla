@@ -2,17 +2,17 @@ _Omistettu rakkaalle Ainolle, joka jaksaa kannustaa mua tekemään sitä mistä 
 
 # Helsinki snowplows visualised
 
-This app is running at http://auratkartalla.com/
+This app is running at https://auratkartalla.com/
 
-This data visualization shows an a map information about wintertime maintenance jobs in the Helsinki region. The snowplow GPS data is collected by [Stara](http://www.hel.fi/stara). The API used is part of [Helsinki Open Data project](http://dev.hel.fi/). Data is collected only from a small portion of all vehicles.
+The snowplow GPS data is collected by [Stara](http://www.hel.fi/stara). The API used is part of [Helsinki Open Data project](http://dev.hel.fi/). Data is collected only from a small portion of all vehicles.
 
-I'm using [Sass](http://sass-lang.com/) with [Compass](http://compass-style.org/). I can learn [Sass at Codeschool](https://www.codeschool.com/courses/assembling-sass)). Front-end is done with [Lo-dash](https://lodash.com/) and jQuery. Data comes from [the Aura-API](https://github.com/City-of-Helsinki/aura/wiki/API).
+I'm using [Sass](http://sass-lang.com/) with [Compass](http://compass-style.org/). You can learn [Sass at Codeschool](https://www.codeschool.com/courses/assembling-sass)). Front-end is done with [Lo-dash](https://lodash.com/) and jQuery. Data comes from [the Aura-API](https://github.com/City-of-Helsinki/aura/wiki/API).
 
 ## How to
+
     gem install compass (Sass 3.4.9 and Compass 1.0.1 tested)
     compass watch .
     python -m SimpleHTTPServer 8000 / open index.html in a browser
-
 
 ## Links
 - [Auratkartalla.com on Twitter](https://twitter.com/auratkartalla)
