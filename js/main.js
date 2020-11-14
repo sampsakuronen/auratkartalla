@@ -197,4 +197,3 @@ console.log(`\
 .                  https://github.com/sampsakuronen/snowplow-visualization      .\n \
 .                                                                               .\n \
 .................................................................................\n`)
-console.log('It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/')
