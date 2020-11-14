@@ -73,13 +73,11 @@ function getPlowJobColor(job) {
 
 function addMapLine(plowData, plowJobId) {
   const plowTrailColor = getPlowJobColor(plowJobId)
-  const polylinePath = _.reduce(
-    plowData,
+  const polylinePath = plowData.reduce(
     function(accu, x) {
       accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
       return accu
-    },
-    [])
+    })
 
   const polyline = new google.maps.Polyline({
     path: polylinePath,
@@ -94,7 +92,7 @@ function addMapLine(plowData, plowJobId) {
 }
 
 function clearMap() {
-  _.each(activePolylines, polyline=> polyline.setMap(null))
+  activePolylines.forEach(polyline=> polyline.setMap(null))
 }
 
 function displayNotification(notificationText) {
@@ -125,7 +123,7 @@ function createIndividualPlowTrail(hours, plowId, historyData) {
   $.getJSON(`${snowAPI}${plowId}?since=${hours}&temporal_resolution=4`)
     .done(function(json) {
       if (json.length !== 0) {
-        _.map(json, function(oneJobOfThisPlow) {
+        json.map(function(oneJobOfThisPlow) {
           const plowHasLastGoodEvent = (oneJobOfThisPlow != null) && (oneJobOfThisPlow[0] != null) && (oneJobOfThisPlow[0].events != null) && (oneJobOfThisPlow[0].events[0] != null)
           if (plowHasLastGoodEvent) {
             addMapLine(oneJobOfThisPlow, oneJobOfThisPlow[0].events[0])
@@ -138,7 +136,7 @@ function createIndividualPlowTrail(hours, plowId, historyData) {
 }
 
 function createPlowsOnMap(hours, json) {
-  _.each(json, x=> createIndividualPlowTrail(hours, x.id, json))
+  json.forEach((x) => createIndividualPlowTrail(hours, x.id, json))
 }
 
 
